@@ -1,0 +1,24 @@
+#alert {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 80%;
+    width: 100%;
+    text-align: center;
+    transform: translateY(-100%);
+    transition: .5s transform;
+    background-color: white;
+	opacity:0.85;	
+    font-weight: bold;
+    font-size: 150%;
+    padding: 50px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+#alert.show {
+    transform: translateY(0);
+    transition: .5s transform;
+}
+

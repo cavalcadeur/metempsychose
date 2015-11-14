@@ -1,0 +1,22 @@
++ Animation de Métampsychose             [DONE]
++ Capacités spéciales                    [DONE]
++ Harpon de métampsy                     [DONE]
++ bloquer les sauts avec les barres      [DONE]
++ faire les résistances					 [DONE]
++ IA 									 [DONE]
++ rotation de la boule                   [DONE]
++ Mort                                   [DONE]
++ Laser Psychologique                    [DONE]
++ miniMap                                [DONE]
++ selection des niveaux                  [DONE]
++ victoire                               [DONE]
+- animation de victoire
+- simplification des niveaux
+- Animations de déplacement
+- palmiers à améliorer
+- niveaux 
+	- lier les niveaux 1-1 et 1-2.
+	- finir le niveau 1-2
+	- faire le niveau 2-3
+	- faire les bonus 2,3 et 4
+
