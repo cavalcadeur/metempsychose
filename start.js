@@ -780,6 +780,8 @@ function drawMap() {
 
 function finNiveau(){
     element.choixN.push([victoire[4],victoire[5],"select"]);
+    nVictoire = 1000;
+    victoire = [0,0,0,0,0,0];
 }
 
 function selection(choixNiveau){
