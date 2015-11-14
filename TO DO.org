@@ -18,5 +18,5 @@
 	- lier les niveaux 1-1 et 1-2.
 	- finir le niveau 1-2
 	- faire le niveau 2-3
-	- faire les bonus 2,3 et 4
+	- faire le bonus 3
 
