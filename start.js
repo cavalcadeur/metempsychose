@@ -267,6 +267,12 @@ function Brique(){
     this.sy = 0;
 }
 
+function Liane(){
+    this.img = "lianeFeuille";
+    this.sx = 0;
+    this.sy = 20;
+}
+
 
 var element = {"feu":[],"balle":[],"panneau":[],"choixN":[]};
 
@@ -797,6 +803,7 @@ function selection(choixNiveau){
         element.choixN = [];
 
         decor = [{"x":0,"y":20,"type":new Barre,"img":new Image()},
+                 {"x":100,"y":90,"type":new Liane,"img":new Image()},
                  {"x":400,"y":-50,"type":new PanneauBas,"img":new Image()},
                  {"x":750,"y":720,"type":new PanneauDanger,"img":new Image()},
                  {"x":700,"y":1310,"type":new Bush,"img":new Image()},
@@ -860,12 +867,27 @@ function selection(choixNiveau){
         element.balle = [];
         balles = 0;
         element.panneau = [];
-        element.choixN = [[1510,320,"select"],[1450,520,"bonus"]];
+        element.choixN = [[1510,320,"bonus2"],[1450,520,"select"]];
 
         decor = [];
 
         actor = [{"x":20,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule,"img":new Image()},
-                 {"x":300,"y":-40,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Interrupteur,"img":new Image(),"plate":[1000,520,500,ep]}];
+                 {"x":300,"y":-0,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Interrupteur,"img":new Image(),"plate":[1100,520,500,ep]}];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 180;
+        chute = [2000,"2-4"];
+    }   
+    else if (choixNiveau == "bonus2"){
+        niveau = [[0,200,2000,50],[100,190,900,60],[200,180,800,70],[300,170,700,80],[400,160,600,90],[500,150,500,100],[600,140,400,110],[700,130,300,120],[800,120,200,130],[900,110,100,140]];
+        element.balle = [];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[1800,200,"select"]];
+
+        decor = [];
+
+        actor = [{"x":20,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule,"img":new Image()},
+                 {"x":300,"y":-0,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champi,"img":new Image()}];
         victoire = [0,0,0,0,0,0];
         nVictoire = 180;
         chute = [2000,"2-4"];
