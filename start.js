@@ -366,6 +366,7 @@ function gauche(n){
 }
 
 function moveRight(n){
+    actor[n].sens = 1;
     actor[n].vx += actor[n].moves.vit;
     if (actor[n].moves.capa == "courseLongue") actor[n].vx = actor[n].moves.vit;
     if (actor[n].moves.capa == "instable"){
@@ -377,6 +378,7 @@ function moveRight(n){
 }
 
 function moveLeft(n){
+    actor[n].sens = -1;
     actor[n].vx -= actor[n].moves.vit;
     if (actor[n].moves.capa == "courseLongue") actor[n].vx = -1 * actor[n].moves.vit;
     if (actor[n].moves.capa == "instable"){
@@ -684,7 +686,13 @@ function draw() {
                 ctx.drawImage(c.img,- c.moves.sx / 2,- c.moves.sy / 2);
                 ctx.restore();
             }
-            else ctx.drawImage(c.img,c.x - c.moves.sx / 2 - X,c.y - c.moves.sy - Y);
+            else {
+                ctx.save();
+                ctx.translate(c.x - X,c.y - c.moves.sy / 2 - Y);
+                ctx.scale(c.sens,1);
+                ctx.drawImage(c.img,- c.moves.sx / 2,- c.moves.sy / 2);
+                ctx.restore();
+            }
         }
     );
     niveau.forEach(
