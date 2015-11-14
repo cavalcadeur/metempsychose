@@ -10,13 +10,12 @@
 + miniMap                                [DONE]
 + selection des niveaux                  [DONE]
 + victoire                               [DONE]
++ Animations de déplacement              [DONE]
++ simplification des niveaux             [DONE]
 - animation de victoire
-- simplification des niveaux
-- Animations de déplacement
 - palmiers à améliorer
 - niveaux 
 	- lier les niveaux 1-1 et 1-2.
 	- finir le niveau 1-2
 	- faire le niveau 2-3
-	- faire le bonus 3
 
