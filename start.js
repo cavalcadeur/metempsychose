@@ -273,6 +273,18 @@ function Liane(){
     this.sy = 20;
 }
 
+function Liane2(){
+    this.img = "lianeFeuille2";
+    this.sx = 0;
+    this.sy = 20;
+}
+
+function Titre(){
+    this.img = "Titre";
+    this.sx = 0;
+    this.sy = 20;
+}
+
 
 var element = {"feu":[],"balle":[],"panneau":[],"choixN":[]};
 
@@ -797,7 +809,8 @@ function selection(choixNiveau){
 
         decor = [{"x":0,"y":20,"type":new Barre,"frame":0,"img":new Image()},
                  {"x":200,"y":320,"type":new Barre,"img":new Image()},
-                 {"x":700,"y":320,"type":new Barre,"img":new Image()}];
+                 {"x":700,"y":320,"type":new Barre,"img":new Image()},
+                 {"x":0,"y":-400,"type":new Titre,"img":new Image()}];
 
         actor = [{"x":20,"y":0,"vx":0,"vy":0,"g":-20,"sens":1,"saut":0,"moves":new Boule,"img":new Image()}];
         victoire = [2000,1450,400,50];
