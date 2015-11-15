@@ -14,8 +14,9 @@
 + simplification des niveaux             [DONE]
 - animation de victoire
 - palmiers à améliorer
+- pluie
 - niveaux 
-	- lier les niveaux 1-1 et 1-2.
 	- finir le niveau 1-2
 	- faire le niveau 2-3
+    - habiller les niveaux
 

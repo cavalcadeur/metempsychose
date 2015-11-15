@@ -101,6 +101,7 @@ function Boule() {
     this.capa = "instable";
     this.inertie = 0;
     this.r = 0;
+    this.size = 1;
     this.IA = "wait";
     this.att = [2,1];
     this.res = [];
@@ -209,6 +210,38 @@ function Interrupteur(){
     this.IA = "wait";
     this.att = [];
     this.res = [1,3,4,5,6,7,8,9];
+    this.mode = 0;
+    this.anim = ["w",0];
+}
+
+function Canon(){
+    this.saut = 0;
+    this.vit = 0;
+    this.img = "canon";
+    this.sx = 33;
+    this.sy = 38;
+    this.capa = "tirNeige";
+    this.IA = "tirNeige";
+    this.att = [];
+    this.res = [1,2,3,4,5,6,7,8,9,10];
+    this.mode = 0;
+    this.spam = 800;
+    this.anim = ["w",0];
+}
+
+function BouleNeige(){
+    this.saut = 0;
+    this.vit = 2;
+    this.img = "bouleNeige";
+    this.sx = 40;
+    this.sy = 40;
+    this.r = 0;
+    this.inertie = 0;
+    this.size = 0.5;
+    this.capa = "grossissement";
+    this.IA = "allerRetour";
+    this.att = [1,2];
+    this.res = [1,2,3,4,5,6,7,8,9,10];
     this.mode = 0;
     this.anim = ["w",0];
 }
@@ -329,7 +362,7 @@ function tombe(n){
             }
         }
     );
-    if (actor[n].moves.capa == "instable"){
+    if (actor[n].moves.capa == "instable" | actor[n].moves.capa == "grossissement"){
         if (actor[n].moves.inertie > 0)actor[n].moves.r += sautG;
         if (actor[n].moves.inertie < 0)actor[n].moves.r -= sautG;
         if (actor[n].moves.r < Math.PI)actor[n].moves.r += 2*Math.PI;
@@ -381,9 +414,10 @@ function moveRight(n){
     actor[n].sens = 1;
     actor[n].vx += actor[n].moves.vit;
     if (actor[n].moves.capa == "courseLongue") actor[n].vx = actor[n].moves.vit;
-    if (actor[n].moves.capa == "instable"){
+    if (actor[n].moves.capa == "instable"  | actor[n].moves.capa == "grossissement"){
         actor[n].moves.inertie += 0.1;
         actor[n].moves.r += actor[n].moves.vit / actor[n].moves.sy;
+        if (actor[n].moves.capa == "grossissement" && actor[n].moves.size < 20) actor[n].moves.size += actor[n].moves.vit/1000;
         if (actor[n].moves.r > Math.PI)actor[n].moves.r -= 2*Math.PI;
     }
 
@@ -393,9 +427,10 @@ function moveLeft(n){
     actor[n].sens = -1;
     actor[n].vx -= actor[n].moves.vit;
     if (actor[n].moves.capa == "courseLongue") actor[n].vx = -1 * actor[n].moves.vit;
-    if (actor[n].moves.capa == "instable"){
+    if (actor[n].moves.capa == "instable"  | actor[n].moves.capa == "grossissement"){
         actor[n].moves.inertie -= 0.1;
         actor[n].moves.r -= actor[n].moves.vit / actor[n].moves.sy;
+        if (actor[n].moves.capa == "grossissement" && actor[n].moves.size < 20) actor[n].moves.size += actor[n].moves.vit/1000;
         if (actor[n].moves.r < Math.PI)actor[n].moves.r += 2*Math.PI;
     }
 }
@@ -419,6 +454,13 @@ function IA(i){
     else if (actor[i].moves.IA == "allerRetour") {
         if (test(actor[i].x + actor[i].sens * actor[i].moves.vit,actor[i].y) == true){
             actor[i].vx = actor[i].sens * actor[i].moves.vit;
+            if (actor[i].moves.capa == "instable"  | actor[i].moves.capa == "grossissement"){
+                actor[i].moves.inertie += 0.1 * actor[i].sens;
+                actor[i].moves.r += (actor[i].moves.vit / actor[i].moves.sy) * actor[i].sens;
+                if (actor[i].moves.capa == "grossissement" && actor[i].moves.size < 20) actor[i].moves.size += actor[i].moves.vit/1000;
+                if (actor[i].moves.r > Math.PI)actor[i].moves.r -= 2*Math.PI;
+                if (actor[i].moves.r < -Math.PI)actor[i].moves.r += 2*Math.PI;
+    }
         }
         else actor[i].sens *= -1;
     }
@@ -691,9 +733,10 @@ function draw() {
             c.img.onload = function (){
                 console.log("coucou");
             };
-            if (c.moves.capa == "instable"){
+            if (c.moves.capa == "instable"  | c.moves.capa == "grossissement"){
                 ctx.save();
-                ctx.translate(c.x - X,c.y - c.moves.sy / 2 - Y);
+                ctx.translate(c.x - X,c.y - c.moves.sy * c.moves.size / 2 - Y);
+                ctx.scale(c.moves.size,c.moves.size);
                 ctx.rotate(c.moves.r);
                 ctx.drawImage(c.img,- c.moves.sx / 2,- c.moves.sy / 2);
                 ctx.restore();
@@ -805,7 +848,7 @@ function selection(choixNiveau){
         element.balle = [];
         balles = 0;
         element.panneau = [[130,20,"Monde 1 : difficile"],[640,320,"Monde 2 : adresse"]];
-        element.choixN = [[300,20,"1-1"],[450,20,"1-2"],[450,320,"2-1"],[300,320,"2-2"],[1050,320,"2-4"]];
+        element.choixN = [[300,20,"1-1"],[450,20,"1-2"],[450,320,"2-1"],[300,320,"2-2"],[900,320,"2-3"],[1050,320,"2-4"]];
 
         decor = [{"x":0,"y":20,"type":new Barre,"frame":0,"img":new Image()},
                  {"x":200,"y":320,"type":new Barre,"img":new Image()},
@@ -869,6 +912,22 @@ function selection(choixNiveau){
         victoire = [0,0,500,1000,400,549];
         nVictoire = 1;
         chute = [5000,"2-2"];
+    }
+    else if (choixNiveau == "2-3"){
+        niveau = [[0,20,2000,ep]];
+        
+        element.balle = [];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[1900,20,"select"]];
+
+        decor = [];
+
+        actor = [{"x":20,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule,"img":new Image()},
+                 {"x":1900,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new BouleNeige,"img":new Image()}];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 180;
+        chute = [500,"2-3"];
     }
     else if (choixNiveau == "2-4"){
         niveau = [[0,20,500,ep],[700,20,ep,ep],[1000,20,ep,ep],[1300,20,ep,ep],[1600,20,ep,ep],[1600+ep,120,500,ep],[1700+ep,-300,ep,ep],[1600,-500,ep,ep],[1100,-700,200,ep]];
@@ -953,7 +1012,7 @@ function selection(choixNiveau){
         decor = [];
 
         actor = [{"x":50,"y":750,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageFeu,"img":new Image()},
-                 {"x":450,"y":500,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()},
+                 {"x":450,"y":500,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new BouleNeige,"img":new Image()},
                  {"x":1290,"y":500,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Jumper,"img":new Image()},
                  {"x":1200,"y":500,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
                  {"x":1370,"y":500,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Jumper,"img":new Image()},
