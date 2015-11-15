@@ -1012,7 +1012,7 @@ function selection(choixNiveau){
         decor = [];
 
         actor = [{"x":50,"y":750,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageFeu,"img":new Image()},
-                 {"x":450,"y":500,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new BouleNeige,"img":new Image()},
+                 {"x":450,"y":500,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()},
                  {"x":1290,"y":500,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Jumper,"img":new Image()},
                  {"x":1200,"y":500,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
                  {"x":1370,"y":500,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Jumper,"img":new Image()},

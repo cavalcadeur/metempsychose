@@ -18,8 +18,5 @@
 - niveaux 
 	- finir le niveau 1-2
 	- faire le niveau 2-3
-<<<<<<< HEAD
     - habiller les niveaux
-=======
->>>>>>> ff96fda6bc98135fe67ff3d773b9f59ca3670fa0
 
