@@ -228,7 +228,7 @@ function Interrupteur(){
 }
 
 function Bipede(){
-    this.saut = 17;
+    this.saut = 13;
     this.vit = 3;
     this.img = "bipede";
     this.sx = 150;
@@ -353,6 +353,13 @@ selection("select");
 
 function rnd(max){
     return Math.floor(Math.floor(Math.random()*max));
+}
+
+function resize(){
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.setAttribute("width",W);
+    canvas.setAttribute("height",H);
 }
 
 function tombe(n){
@@ -593,6 +600,7 @@ function start(){
     ctx = canvas.getContext("2d");
     W = canvas.width;
     H = canvas.height;
+    resize();
     actor.forEach(
         function(c) {
             c.img.src = "images/" + c.moves.img + ".png";
@@ -697,6 +705,7 @@ function paint(t){
             else if (actor[i].vx < 0) gauche(i);
             if (actor[i].moves.capa == "graviteD") actor[i].vx += actor[i].g;
             else actor[i].vy += actor[i].g;
+            if (actor[i].moves.capa == "lourd") actor[i].vy += actor[i].g;
             actor[i].x += actor[i].vx;
             actor[i].y += actor[i].vy;
             if (actor[i].moves.capa != "courseLongue"){
@@ -723,7 +732,7 @@ function paint(t){
 }
 
 function draw() {
-    ctx.drawImage(imgFond,0,0);
+    ctx.drawImage(imgFond,0,0,W,H);
     ctx.fillStyle = "rgb(0,114,15)";
     element.panneau.forEach(
         function(e) {
@@ -837,7 +846,7 @@ function drawTransfert() {
 }
 
 function drawMap() {
-    ctx.drawImage(imgFond,0,0);
+    ctx.drawImage(imgFond,0,0,W,H);
     ctx.fillStyle = "rgb(0,114,15)";
     niveau.forEach(
         function(c) {
@@ -940,7 +949,7 @@ function selection(choixNiveau){
 
         decor = [];
 
-        actor = [{"x":20,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new GraviChampi,"img":new Image()},
+        actor = [{"x":20,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule,"img":new Image()},
                  {"x":800,"y":-250,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Bipede,"img":new Image()}];
         victoire = [0,0,0,0,0,0];
         nVictoire = 180;
