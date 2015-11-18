@@ -134,6 +134,19 @@ function Champi(){
     this.anim = ["w",6,0,100];
 }
 
+function GraviChampi(){
+    this.saut = 0;
+    this.vit = 4;
+    this.img = "champi";
+    this.sx = 48;
+    this.sy = 50;
+    this.capa = "graviteD";
+    this.IA = "wait";
+    this.att = [1];
+    this.res = [];
+    this.anim = ["w",6,0,100];
+}
+
 function Jumper(){
     this.saut = 20;
     this.vit = 0;
@@ -197,7 +210,7 @@ function Esprit() {
     this.att = [];
     this.res = [];
     this.spam = 80;
-    this.anim = ["w",0];
+    this.anim = ["f",3,0,100];
 }
 
 function Interrupteur(){
@@ -225,7 +238,7 @@ function Bipede(){
     this.att = [];
     this.res = [1,2,3,4,5,6,7,8,9,10];
     this.mode = 0;
-    this.anim = ["w",0];
+    this.anim = ["w",4,0,150];
 }
 
 function BouleNeige(){
@@ -682,7 +695,8 @@ function paint(t){
             }
             if (actor[i].vx > 0) droite(i);
             else if (actor[i].vx < 0) gauche(i);
-            actor[i].vy += actor[i].g;
+            if (actor[i].moves.capa == "graviteD") actor[i].vx += actor[i].g;
+            else actor[i].vy += actor[i].g;
             actor[i].x += actor[i].vx;
             actor[i].y += actor[i].vy;
             if (actor[i].moves.capa != "courseLongue"){
@@ -845,17 +859,18 @@ function selection(choixNiveau){
     j = 0;
     element = {"feu":[],"balle":[],"panneau":[],"choixN":[]};
     if (choixNiveau == "select"){
-        niveau = [[0,20,500,ep],[200,320,500,ep],[700,320,500,ep]];
+        niveau = [[0,20,500,ep],[200,320,500,ep],[700,320,500,ep],[0,620,500,ep]];
         
         element.balle = [];
         balles = 0;
-        element.panneau = [[130,20,"Monde 1 : difficile"],[640,320,"Monde 2 : adresse"]];
-        element.choixN = [[300,20,"1-1"],[450,20,"1-2"],[450,320,"2-1"],[300,320,"2-2"],[900,320,"2-3"],[1050,320,"2-4"],[750,320,"2-5"]];
+        element.panneau = [[130,20,"Monde 1 : difficile"],[640,320,"Monde 2 : adresse"],[130,620,"Monde 3 : moyennement dur"]];
+        element.choixN = [[300,20,"1-1"],[450,20,"1-2"],[450,320,"2-1"],[300,320,"2-2"],[900,320,"2-3"],[1050,320,"2-4"],[750,320,"2-5"],[300,620,"3-1"]];
 
         decor = [{"x":0,"y":20,"type":new Barre,"frame":0,"img":new Image()},
                  {"x":200,"y":320,"type":new Barre,"img":new Image()},
                  {"x":700,"y":320,"type":new Barre,"img":new Image()},
-                 {"x":0,"y":-400,"type":new Titre,"img":new Image()}];
+                 {"x":0,"y":-400,"type":new Titre,"img":new Image()},
+                 {"x":0,"y":620,"type":new Barre,"img":new Image()}];
 
         actor = [{"x":20,"y":0,"vx":0,"vy":0,"g":-20,"sens":1,"saut":0,"moves":new Boule,"img":new Image()}];
         victoire = [2000,1450,400,50];
@@ -925,7 +940,7 @@ function selection(choixNiveau){
 
         decor = [];
 
-        actor = [{"x":20,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule,"img":new Image()},
+        actor = [{"x":20,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new GraviChampi,"img":new Image()},
                  {"x":800,"y":-250,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Bipede,"img":new Image()}];
         victoire = [0,0,0,0,0,0];
         nVictoire = 180;
@@ -1045,6 +1060,24 @@ function selection(choixNiveau){
         victoire = [2000,1200,400,400,2000,1550];
         nVictoire = 2;
         chute = [5000,"1-1"];
+    }
+    else if (choixNiveau == "3-1"){
+        niveau = [[0,300,ep,ep],[250,300,400,ep],[650,0,400,ep],[650-ep,450,ep,ep],[450,750,600,ep],[250,650,ep,ep],[100,500,ep,ep],[1050,300,400,ep]];
+        
+        element.balle = [[600,230],[700,650],[700,230]];
+        balles = 0;
+        element.panneau = [[400,300,"Ammenez le mage sur la plate-forme d'en face."]];
+        element.choixN = [[1940+ep,120,"select"],[1160,-700,"bonus"]];
+
+        decor = [];
+
+        actor = [{"x":300,"y":100,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new MageFeu,"img":new Image()},
+                 {"x":900,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Bipede,"img":new Image()},
+                 {"x":660-ep,"y":450,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule,"img":new Image()},
+                 {"x":800,"y":700,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Champi,"img":new Image()}];
+        victoire = [950,0,500,500,1250,300];
+        nVictoire = 1;
+        chute = [2000,"3-1"];
     }
     actor.forEach(
         function(c) {
