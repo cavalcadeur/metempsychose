@@ -1,5 +1,6 @@
 var W,H;
 var ctx,canvas;
+var Widget;
 var X = 0;
 var Y = 400;
 var ep = 50;
@@ -33,6 +34,7 @@ var ratio = 4;
 var gagne = 0;
 var arti = 1000;
 var t2 = 0;
+var square;
 
 imgFond.onload = function (){
     console.log(imgFond);
@@ -601,6 +603,8 @@ function start(){
     W = canvas.width;
     H = canvas.height;
     resize();
+    Widget = require("wdg");
+    square = new Widget({id: "square"});
     actor.forEach(
         function(c) {
             c.img.src = "images/" + c.moves.img + ".png";
@@ -675,7 +679,13 @@ function paint(t){
                 }
             );
         }
-        else if (actor[i].moves.capa == "explosive" && t - actor[i].moves.explode > 2200)coup(i,15);
+        else if (actor[i].moves.capa == "explosive" && t - actor[i].moves.explode > 2200){
+            for (var iii = 0; iii < 8; iii++) {
+                var taille = rnd(100) + 150;
+                newExplosion(200 + "px",200 + "px",actor[i].x - 100 - rnd(50) + "px",actor[i].y - 175 + rnd(50)+ "px", taille + "px",0,1);
+            }
+            coup(i,15);
+        }
         else{
             if (actor[i].moves.capa == "instable"){
                 actor[i].vx += actor[i].moves.inertie;
@@ -729,6 +739,11 @@ function paint(t){
     ctx.closePath();
     ctx.stroke();
     t2 = t;
+    square.css({
+        position: "absolute",
+        left: -X + "px",
+        top: -Y + "px"
+    });
 }
 
 function draw() {
