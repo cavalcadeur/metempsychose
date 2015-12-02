@@ -97,7 +97,7 @@ function MageTerre(){
 function Boule() {
     this.saut = 27;
     this.vit = 3;
-    this.img = "boule";
+    this.img = "boule2";
     this.sx = 63;
     this.sy = 63;
     this.capa = "instable";
@@ -126,14 +126,14 @@ function Champique(){
 function Champi(){
     this.saut = 0;
     this.vit = 3;
-    this.img = "champi2";
+    this.img = "champi3";
     this.sx = 200;
     this.sy = 229;
     this.capa = "";
     this.IA = "allerRetour";
     this.att = [1];
     this.res = [];
-    this.anim = ["w",6,0,100];
+    this.anim = ["w",0,0,100];
 }
 
 function GraviChampi(){
@@ -673,6 +673,10 @@ function paint(t){
             actor[i].moves.capa = "explosive";
             actor[i].moves.att.push(10);
             actor[i].img.src = actor[i].img.src = "images/" + actor[i].moves.img + "3.png";
+           for (var iii = 0; iii < 5; iii++) {
+                var taille = rnd(100) + 50;
+                newExplosion(actor[i].x - 50 + "px",actor[i].y - 105  + "px",actor[i].x - 70 - rnd(30) + "px",actor[i].y - 155 - rnd(30)+ "px", taille + "px",0,1);
+            }
             actor.forEach(
                 function(c,index) {
                     contact(i,index);
@@ -680,10 +684,6 @@ function paint(t){
             );
         }
         else if (actor[i].moves.capa == "explosive" && t - actor[i].moves.explode > 2200){
-            for (var iii = 0; iii < 8; iii++) {
-                var taille = rnd(100) + 150;
-                newExplosion(200 + "px",200 + "px",actor[i].x - 100 - rnd(50) + "px",actor[i].y - 175 + rnd(50)+ "px", taille + "px",0,1);
-            }
             coup(i,15);
         }
         else{
@@ -773,20 +773,22 @@ function draw() {
             c.img.onload = function (){
                 console.log("coucou");
             };
-            if (c.moves.capa == "instable"  | c.moves.capa == "grossissement"){
-                ctx.save();
-                ctx.translate(c.x - X,c.y - c.moves.sy * c.moves.size / 2 - Y);
-                ctx.scale(c.moves.size,c.moves.size);
-                ctx.rotate(c.moves.r);
-                ctx.drawImage(c.img,- c.moves.sx / 2,- c.moves.sy / 2);
-                ctx.restore();
-            }
-            else {
-                ctx.save();
-                ctx.translate(c.x - X,c.y - c.moves.sy / 2 - Y);
-                ctx.scale(c.sens,1);
-                ctx.drawImage(c.img,- c.moves.sx / 2,- c.moves.sy / 2);
-                ctx.restore();
+            if (c.x < X + W && c.y < Y + H && c.x > X - c.moves.sx && c.y > Y - c.moves.sy){
+                if (c.moves.capa == "instable"  | c.moves.capa == "grossissement"){
+                    ctx.save();
+                    ctx.translate(c.x - X,c.y - c.moves.sy * c.moves.size / 2 - Y);
+                    ctx.scale(c.moves.size,c.moves.size);
+                    ctx.rotate(c.moves.r);
+                    ctx.drawImage(c.img,- c.moves.sx / 2,- c.moves.sy / 2);
+                    ctx.restore();
+                }
+                else {
+                    ctx.save();
+                    ctx.translate(c.x - X,c.y - c.moves.sy / 2 - Y);
+                    ctx.scale(c.sens,1);
+                    ctx.drawImage(c.img,- c.moves.sx / 2,- c.moves.sy / 2);
+                    ctx.restore();
+                }
             }
         }
     );
@@ -931,7 +933,8 @@ function selection(choixNiveau){
                  {"x":550,"y":700,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Interrupteur,"img":new Image(),"plate":[200,320,1000,ep]},
                  {"x":1380,"y":920,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Interrupteur,"img":new Image(),"plate":[1350,520,150,ep]},
                  {"x":800,"y":1300,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Champi,"img":new Image()},
-                 {"x":2000,"y":500,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new MageFeu,"img":new Image()}];
+                 {"x":2000,"y":500,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new MageFeu,"img":new Image()},
+                 {"x":2000,"y":1100,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Bombe,"img":new Image()}];
         victoire = [1900,0,1000,850,2300,849];
         nVictoire = 1;
         chute = [5000,"2-1"];

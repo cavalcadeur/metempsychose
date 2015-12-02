@@ -1,4 +1,5 @@
 var newExplosion = function(x,y,tx,ty,s,color,n){
+    console.log(x,y,tx,ty);
     var Widget = require("wdg");
     var time = 4;
     var random = 1;
@@ -61,14 +62,15 @@ var newExplosion = function(x,y,tx,ty,s,color,n){
         top: y
     });
     h.rect();
-    h.css({
-        position: "absolute",
-        left: tx,
-        top: ty
+    window.setTimeout(function () {
+        h.css({
+            left: tx,
+            top: ty
+        });
     });
+    console.info("[nuage] h.css('left')=...", h.css('left'));
     var timeOut = window.setTimeout(function(){
         h.detach();
     },time * 1000);
     square.append(h);
 }
-

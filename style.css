@@ -43,5 +43,6 @@ canvas {
 }
 
 .nuage {
-  transition: left top 1s;
+  position: absolute;
+  transition: all 5s;
 }
