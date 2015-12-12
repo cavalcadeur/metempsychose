@@ -97,7 +97,7 @@ function MageTerre(){
 function Boule() {
     this.saut = 27;
     this.vit = 3;
-    this.img = "boule2";
+    this.img = "boule5";
     this.sx = 63;
     this.sy = 63;
     this.capa = "instable";
@@ -484,7 +484,7 @@ function IA(i){
                 if (actor[i].moves.capa == "grossissement" && actor[i].moves.size < 20) actor[i].moves.size += actor[i].moves.vit/1000;
                 if (actor[i].moves.r > Math.PI)actor[i].moves.r -= 2*Math.PI;
                 if (actor[i].moves.r < -Math.PI)actor[i].moves.r += 2*Math.PI;
-    }
+            }
         }
         else actor[i].sens *= -1;
     }
@@ -631,6 +631,16 @@ function start(){
             keys[event.keyCode] = 0;
         }
     );
+    loading();
+}
+
+function loading(){
+    actor.forEach(
+        function(c) {
+            c.img.onload = function (){
+                console.log("coucou");
+            };
+        });
     animation();
 }
 
@@ -661,8 +671,10 @@ function paint(t){
     if (1 == keys[32]) action();
     var victorieux = 0;
     for (var i = 0;i < actor.length;i++){
-        if ((actor[i].moves.img == "E" | actor[i].moves.img == "F2" | actor[i].moves.img == "T") && actor[i].x > victoire[0] && actor[i].x < victoire[0] + victoire[2] && actor[i].y > victoire[1] && actor[i].y < victoire[1] + victoire[3]) victorieux += 1 ;
-        if (victorieux == nVictoire) finNiveau();
+        if ((actor[i].moves.img == "E" | actor[i].moves.img == "F2" | actor[i].moves.img == "T") && actor[i].x > victoire[0] && actor[i].x < victoire[0] + victoire[2] && actor[i].y > victoire[1] && actor[i].y < victoire[1] + victoire[3]){ 
+            victorieux += 1 ;
+            if (victorieux == nVictoire) finNiveau();
+        }        
         if (actor[i].moves.capa == "feu" | actor[i].moves.IA == "maintien")actor[i].moves.spam += 1;
         if (actor[i].moves.capa == "explode" && actor[i].moves.explode == 1){
             actor[i].moves.res = [1,2,3,4,5,6,7,8,9,10];
@@ -673,7 +685,7 @@ function paint(t){
             actor[i].moves.capa = "explosive";
             actor[i].moves.att.push(10);
             actor[i].img.src = actor[i].img.src = "images/" + actor[i].moves.img + "3.png";
-           for (var iii = 0; iii < 5; iii++) {
+            for (var iii = 0; iii < 5; iii++) {
                 var taille = rnd(100) + 50;
                 newExplosion(actor[i].x - 50 + "px",actor[i].y - 105  + "px",actor[i].x - 70 - rnd(30) + "px",actor[i].y - 155 - rnd(30)+ "px", taille + "px",0,1);
             }
@@ -770,25 +782,20 @@ function draw() {
     );
     actor.forEach(
         function(c) {
-            c.img.onload = function (){
-                console.log("coucou");
-            };
-            if (c.x < X + W && c.y < Y + H && c.x > X - c.moves.sx && c.y > Y - c.moves.sy){
-                if (c.moves.capa == "instable"  | c.moves.capa == "grossissement"){
-                    ctx.save();
-                    ctx.translate(c.x - X,c.y - c.moves.sy * c.moves.size / 2 - Y);
-                    ctx.scale(c.moves.size,c.moves.size);
-                    ctx.rotate(c.moves.r);
-                    ctx.drawImage(c.img,- c.moves.sx / 2,- c.moves.sy / 2);
-                    ctx.restore();
-                }
-                else {
-                    ctx.save();
-                    ctx.translate(c.x - X,c.y - c.moves.sy / 2 - Y);
-                    ctx.scale(c.sens,1);
-                    ctx.drawImage(c.img,- c.moves.sx / 2,- c.moves.sy / 2);
-                    ctx.restore();
-                }
+            if (c.moves.capa == "instable"  | c.moves.capa == "grossissement"){
+                ctx.save();
+                ctx.translate(c.x - X,c.y - c.moves.sy * c.moves.size / 2 - Y);
+                ctx.scale(c.moves.size,c.moves.size);
+                ctx.rotate(c.moves.r);
+                ctx.drawImage(c.img,- c.moves.sx / 2,- c.moves.sy / 2);
+                ctx.restore();
+            }
+            else {
+                ctx.save();
+                ctx.translate(c.x - X,c.y - c.moves.sy / 2 - Y);
+                ctx.scale(c.sens,1);
+                ctx.drawImage(c.img,- c.moves.sx / 2,- c.moves.sy / 2);
+                ctx.restore();
             }
         }
     );
@@ -886,7 +893,7 @@ function selection(choixNiveau){
     element = {"feu":[],"balle":[],"panneau":[],"choixN":[]};
     if (choixNiveau == "select"){
         niveau = [[0,20,500,ep],[200,320,500,ep],[700,320,500,ep],[0,620,500,ep]];
-        
+
         element.balle = [];
         balles = 0;
         element.panneau = [[130,20,"Monde 1 : difficile"],[640,320,"Monde 2 : adresse"],[130,620,"Monde 3 : moyennement dur"]];
@@ -905,7 +912,7 @@ function selection(choixNiveau){
     }
     else if (choixNiveau == "2-1"){
         niveau = [[0,20,500,ep],[200,320,100,ep],[450,800,400,ep],[600,1400,900,ep],[550,1600,200,ep],[1350,1000,150,ep],[1700,800,150,ep],[1900,0,ep,850],[1900,849,600,ep],[1750,1250,400,ep]];
-        
+
         element.balle = [[250,280],[1030,1360],[630,1560],[1730,700],[2070,1150]];
         balles = -4;
         element.panneau = [[130,20,"Attention, il vous faut les 5 balles pour finir le niveau."]];
@@ -940,8 +947,8 @@ function selection(choixNiveau){
         chute = [5000,"2-1"];
     }
     else if (choixNiveau == "2-2"){
-        niveau = [[0,200,1500,ep],[1500,0,200,ep],[0,550,500,ep]];
-        
+        niveau = [[0,200,1500,ep],[1500,0,200,ep],[0,550,500,ep],[0,200,ep,351]];
+
         element.balle = [[1450,160]];
         balles = 0;
         element.panneau = [];
@@ -953,13 +960,13 @@ function selection(choixNiveau){
                  {"x":160,"y":500,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new MageFeu,"img":new Image()},
                  {"x":10,"y":0,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Champi,"img":new Image()},
                  {"x":900,"y":0,"vx":0,"vy":0,"sens":-1,"g":0,"frame":0,"saut":0,"moves":new Champi,"img":new Image()}];
-        victoire = [0,0,500,1000,400,549];
+        victoire = [100,450,100,100,400,549];
         nVictoire = 1;
         chute = [5000,"2-2"];
     }
     else if (choixNiveau == "2-3"){
         niveau = [[0,20,500,ep],[500,-200,500,ep],[1000,20,1000,ep],[500-ep,-500,ep,300],[1000,-400,ep,440]];
-        
+
         element.balle = [[200,-20],[300,-20]];
         balles = 0;
         element.panneau = [];
@@ -975,7 +982,7 @@ function selection(choixNiveau){
     }
     else if (choixNiveau == "2-4"){
         niveau = [[0,20,500,ep],[700,20,ep,ep],[1000,20,ep,ep],[1300,20,ep,ep],[1600,20,ep,ep],[1600+ep,120,500,ep],[1700+ep,-300,ep,ep],[1600,-500,ep,ep],[1100,-700,200,ep]];
-        
+
         element.balle = [];
         balles = 0;
         element.panneau = [];
@@ -1002,7 +1009,7 @@ function selection(choixNiveau){
         victoire = [0,0,0,0,0,0];
         nVictoire = 180;
         chute = [2000,"2-4"];
-    }   
+    }
     else if (choixNiveau == "bonus2"){
         niveau = [[0,200,2000,50],[100,190,900,60],[200,180,800,70],[300,170,700,80],[400,160,600,90],[500,150,500,100],[600,140,400,110],[700,130,300,120],[800,120,200,130],[900,110,100,140]];
         element.balle = [];
@@ -1020,15 +1027,16 @@ function selection(choixNiveau){
     }
     else if (choixNiveau == "2-5"){
         niveau = [[0,20,ep,ep],[200,220,ep,ep],[400,420,ep,ep],[600,620,ep,ep],[800,820,ep,ep],[1000,1020,ep,ep],[1200,1220,ep,ep],[1000,620,ep,ep],[1200,420,ep,ep],[1400,220,ep,ep],[1700,220,ep,ep],[400,820,ep,ep],[200,1020,ep,ep],[1400,1420,300,ep],[1400,1420,ep,300],[1700-ep,1420,ep,300],[1400,1720-ep,300,ep]];
-        
+
         element.balle = [[200,980],[1700,170]];
         balles = -1;
         element.panneau = [[0,10,"Il vous faut deux balles pour la fin."]];
-        element.choixN = [[1940+ep,120,"select"],[1160,-700,"bonus"]];
+        element.choixN = [[1500,1720-ep,"select"]];
 
         decor = [];
 
-        actor = [{"x":10,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule,"img":new Image()}];
+        actor = [{"x":10,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule,"img":new Image()},
+                 {"x":1550,"y":1700-ep,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new MageFeu,"img":new Image()}];
         victoire = [0,0,0,0,0,0];
         nVictoire = 180;
         chute = [2000,"2-5"];
@@ -1090,7 +1098,7 @@ function selection(choixNiveau){
     }
     else if (choixNiveau == "3-1"){
         niveau = [[0,300,ep,ep],[250,300,400,ep],[650,0,400,ep],[650-ep,450,ep,ep],[450,750,600,ep],[250,650,ep,ep],[100,500,ep,ep],[1050,300,400,ep]];
-        
+
         element.balle = [[600,230],[700,650],[700,230]];
         balles = 0;
         element.panneau = [[400,300,"Ammenez le mage sur la plate-forme d'en face."]];

@@ -1,5 +1,4 @@
 var newExplosion = function(x,y,tx,ty,s,color,n){
-    console.log(x,y,tx,ty);
     var Widget = require("wdg");
     var time = 4;
     var random = 1;
@@ -23,6 +22,14 @@ var newExplosion = function(x,y,tx,ty,s,color,n){
             opacity: 1,
             transform: "rotate(360, 50, 50)"
         }).append(
+            Widget.svg('animateTransform', {
+                attributeName: "transform",
+                attributeType: "XML",
+                type: "rotate",
+                values: "0,50,50;-"+rnd(3)+3+",50,50",
+                dur: time,
+                repeatCount: "1"
+            }), 
             Widget.svg('path', {
                 d: "M50,20C60,10,100,30,85,50C100,60,80,100,45,80C40,87,-5,80,10,50C-10,30,30,0,50,20",
                 fill: "rgba(229,179,24,0)"
