@@ -40,6 +40,23 @@ imgFond.onload = function (){
     console.log(imgFond);
 };
 
+var imagesList = ["bombe","bombe2","bombe3","F2","E","bipede","boule4","bouleNeige","boxe","champi","champi3","champique","fantome","inter","jumper","psychos","T"];
+var images = {};
+
+function loading(){
+    var objectif = imagesList.length;
+    imagesList.forEach(
+        function(c) {
+            images[c] = new Image;
+            images[c].src = "images/" + c + ".png";
+            images[c].onload = function (){
+                objectif -= 1;
+                if (objectif == 0) preparation();
+            };
+        }
+    );
+}
+
 function Bombe() {
     this.saut = 0;
     this.vit = 3;
@@ -97,7 +114,7 @@ function MageTerre(){
 function Boule() {
     this.saut = 27;
     this.vit = 3;
-    this.img = "boule5";
+    this.img = "boule4";
     this.sx = 63;
     this.sy = 63;
     this.capa = "instable";
@@ -605,11 +622,6 @@ function start(){
     resize();
     Widget = require("wdg");
     square = new Widget({id: "square"});
-    actor.forEach(
-        function(c) {
-            c.img.src = "images/" + c.moves.img + ".png";
-        }
-    );
     decor.forEach(
         function(c) {
             c.img.src = "images/" + c.type.img + ".png";
@@ -634,13 +646,12 @@ function start(){
     loading();
 }
 
-function loading(){
+function preparation(){
     actor.forEach(
         function(c) {
-            c.img.onload = function (){
-                console.log("coucou");
-            };
-        });
+            c.img = images[c.moves.img];
+        }
+    );
     animation();
 }
 
@@ -783,6 +794,7 @@ function draw() {
     actor.forEach(
         function(c) {
             if (c.moves.capa == "instable"  | c.moves.capa == "grossissement"){
+                console.log(c.img);
                 ctx.save();
                 ctx.translate(c.x - X,c.y - c.moves.sy * c.moves.size / 2 - Y);
                 ctx.scale(c.moves.size,c.moves.size);
@@ -905,7 +917,7 @@ function selection(choixNiveau){
                  {"x":0,"y":-400,"type":new Titre,"img":new Image()},
                  {"x":0,"y":620,"type":new Barre,"img":new Image()}];
 
-        actor = [{"x":20,"y":0,"vx":0,"vy":0,"g":-20,"sens":1,"saut":0,"moves":new Boule,"img":new Image()}];
+        actor = [{"x":20,"y":0,"vx":0,"vy":0,"g":-20,"sens":1,"saut":0,"moves":new Boule}];
         victoire = [2000,1450,400,50];
         nVictoire = 2;
         chute = [5000,"select"];
@@ -918,23 +930,23 @@ function selection(choixNiveau){
         element.panneau = [[130,20,"Attention, il vous faut les 5 balles pour finir le niveau."]];
         element.choixN = [];
 
-        decor = [{"x":0,"y":20,"type":new Barre,"img":new Image()},
-                 {"x":100,"y":90,"type":new Liane,"img":new Image()},
-                 {"x":400,"y":-50,"type":new PanneauBas,"img":new Image()},
-                 {"x":750,"y":720,"type":new PanneauDanger,"img":new Image()},
-                 {"x":700,"y":1310,"type":new Bush,"img":new Image()},
-                 {"x":740,"y":1310,"type":new Bush,"img":new Image()},
-                 {"x":800,"y":1310,"type":new Bush2,"img":new Image()},
-                 {"x":830,"y":1310,"type":new Bush,"img":new Image()},
-                 {"x":890,"y":1310,"type":new Bush,"img":new Image()},
-                 {"x":1300,"y":1310,"type":new Bush,"img":new Image()},
-                 {"x":940,"y":1310,"type":new Bush3,"img":new Image()},
-                 {"x":1000,"y":1310,"type":new Bush2,"img":new Image()},
-                 {"x":1070,"y":1310,"type":new Bush2,"img":new Image()},
-                 {"x":1200,"y":1310,"type":new Bush3,"img":new Image()},
-                 {"x":1700,"y":800,"type":new Brique,"img":new Image()},
-                 {"x":1749,"y":800,"type":new Brique,"img":new Image()},
-                 {"x":1798,"y":800,"type":new Brique,"img":new Image()}];
+        decor = [{"x":0,"y":20,"type":new Barre},
+                 {"x":100,"y":90,"type":new Liane},
+                 {"x":400,"y":-50,"type":new PanneauBas},
+                 {"x":750,"y":720,"type":new PanneauDanger},
+                 {"x":700,"y":1310,"type":new Bush},
+                 {"x":740,"y":1310,"type":new Bush},
+                 {"x":800,"y":1310,"type":new Bush2},
+                 {"x":830,"y":1310,"type":new Bush},
+                 {"x":890,"y":1310,"type":new Bush},
+                 {"x":1300,"y":1310,"type":new Bush},
+                 {"x":940,"y":1310,"type":new Bush3},
+                 {"x":1000,"y":1310,"type":new Bush2},
+                 {"x":1070,"y":1310,"type":new Bush2},
+                 {"x":1200,"y":1310,"type":new Bush3},
+                 {"x":1700,"y":800,"type":new Brique},
+                 {"x":1749,"y":800,"type":new Brique},
+                 {"x":1798,"y":800,"type":new Brique}];
 
         actor = [{"x":20,"y":0,"vx":0,"vy":0,"sens":1,"g":-20,"frame":0,"saut":0,"moves":new Boule,"img":new Image()},
                  {"x":550,"y":700,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Interrupteur,"img":new Image(),"plate":[200,320,1000,ep]},
@@ -1114,11 +1126,7 @@ function selection(choixNiveau){
         nVictoire = 1;
         chute = [2000,"3-1"];
     }
-    actor.forEach(
-        function(c) {
-            c.img.src = "images/" + c.moves.img + ".png";
-        }
-    );
+    preparation();
     decor.forEach(
         function(c) {
             c.img.src = "images/" + c.type.img + ".png";

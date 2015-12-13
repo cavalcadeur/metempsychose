@@ -12,6 +12,7 @@
 + victoire                               [DONE]
 + Animations de déplacement              [DONE]
 + simplification des niveaux             [DONE]
+- gestion des images
 - animation de victoire
 - palmiers à améliorer
 - pluie
