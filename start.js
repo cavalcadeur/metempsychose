@@ -40,7 +40,7 @@ imgFond.onload = function (){
     console.log(imgFond);
 };
 
-var imagesList = ["bombe","bombe2","bombe3","F2","E","bipede","boule4","bouleNeige","boxe","champi","champi3","champique","fantome","inter","jumper","psychos","T"];
+var imagesList = ["bombe","bombe2","bombe3","F2","E","bipede","boule4","bouleNeige","boxe","champi","champi3","champique","fantome","inter","jumper","psychos","T","carnivore"];
 var images = {};
 
 function loading(){
@@ -241,7 +241,7 @@ function Interrupteur(){
     this.capa = "interrupteur";
     this.IA = "wait";
     this.att = [];
-    this.res = [1,3,4,5,6,7,8,9];
+    this.res = [2,3,4,5,6,7,8,9];
     this.mode = 0;
     this.anim = ["w",0];
 }
@@ -447,6 +447,9 @@ function gauche(n){
                 if (actor[n].moves.capa == "courseLongue") actor[n].vx = 0;
                 if (actor[n].moves.capa == "instable") actor[n].moves.inertie = 0;
             }
+            else{
+                
+            }
         }
     );
 }
@@ -557,7 +560,7 @@ function coup(n,att){
                 niveau.splice(niveau.indexOf(actor[n].plate),1);
             }
         }
-        else {actor[n].img.src = "images/" + actor[n].moves.img + "2.png";actor[n].moves.explode = 1;}
+        else {actor[n].img = images[actor[n].moves.img + "2"];actor[n].moves.explode = 1;}
     }
 }
 
@@ -565,13 +568,8 @@ function contact(i,k){
     if (actor.length == 1) return;
     var array = actor[i].moves.att;
     if (array.length != 0){
-        if (array.indexOf(2) != -1 && actor[i].x > actor[k].x - actor[k].moves.sx / 2 && actor[i].x < actor[k].x + actor[k].moves.sx / 2 && actor[i].y > actor[k].y - actor[k].moves.sy && actor[i].y < actor[k].y - actor[k].moves.sy / 2){
-            coup(k,2);
+        if (Math.abs(actor[i].x - actor[k].x) < actor[i].moves.sx / 2 + actor[k].moves.sx / 2 && Math.abs(actor[i].y - actor[i].moves.sy / 2 - (actor[k].y - actor[k].moves.sy / 2)) < actor[i].moves.sy / 2 + actor[k].moves.sy / 2) coup(k,array[array.length - 1]);
         }
-        else {
-            if (Math.abs(actor[i].x - actor[k].x) < actor[i].moves.sx / 2 + actor[k].moves.sx / 2 && Math.abs(actor[i].y - actor[i].moves.sy / 2 - (actor[k].y - actor[k].moves.sy / 2)) < actor[i].moves.sy / 2 + actor[k].moves.sy / 2) coup(k,array[array.length - 1]);
-        }
-    }
 }
 
 function action(){
@@ -695,7 +693,7 @@ function paint(t){
         else if (actor[i].moves.capa == "explode" && actor[i].moves.explode > 0 && t - actor[i].moves.explode > 2000){
             actor[i].moves.capa = "explosive";
             actor[i].moves.att.push(10);
-            actor[i].img.src = actor[i].img.src = "images/" + actor[i].moves.img + "3.png";
+            actor[i].img.src = actor[i].img = images[actor[i].moves.img + "3"];
             for (var iii = 0; iii < 5; iii++) {
                 var taille = rnd(100) + 50;
                 newExplosion(actor[i].x - 50 + "px",actor[i].y - 105  + "px",actor[i].x - 70 - rnd(30) + "px",actor[i].y - 155 - rnd(30)+ "px", taille + "px",0,1);
@@ -722,18 +720,6 @@ function paint(t){
                 actor[i].g += 1;
                 if (actor[i].moves.capa == "immateriel") actor[i].g -= 0.9;
             }
-            if (actor[i].vx != 0 && actor[i].moves.anim[1] > 0){
-                actor[i].moves.anim[2] += t - t2;
-                if (actor[i].moves.anim[2] > actor[i].moves.anim[3]){
-                    actor[i].moves.anim[2] = 0;
-                    actor[i].frame = actor[i].frame + 1;
-                    if (actor[i].frame == actor[i].moves.anim[1]){
-                        actor[i].frame = 0;
-                        actor[i].img.src = "images/" + actor[i].moves.img + ".png";
-                    }
-                    else actor[i].img.src = "images/" + actor[i].moves.img + actor[i].moves.anim[0] + actor[i].frame + ".png";
-                }
-            }
             if (actor[i].vx > 0) droite(i);
             else if (actor[i].vx < 0) gauche(i);
             if (actor[i].moves.capa == "graviteD") actor[i].vx += actor[i].g;
@@ -756,6 +742,7 @@ function paint(t){
     draw();
     cible = proche();
     ctx.lineWidth = filin;
+    ctx.strokeStyle = "rgb(230,230,230)";
     ctx.beginPath();
     ctx.moveTo(actor[j].x - X,actor[j].y  - actor[j].moves.sy / 2 - Y);
     ctx.lineTo(actor[cible].x - X,actor[cible].y - actor[cible].moves.sy / 2 - Y);
@@ -794,7 +781,6 @@ function draw() {
     actor.forEach(
         function(c) {
             if (c.moves.capa == "instable"  | c.moves.capa == "grossissement"){
-                console.log(c.img);
                 ctx.save();
                 ctx.translate(c.x - X,c.y - c.moves.sy * c.moves.size / 2 - Y);
                 ctx.scale(c.moves.size,c.moves.size);
@@ -930,30 +916,30 @@ function selection(choixNiveau){
         element.panneau = [[130,20,"Attention, il vous faut les 5 balles pour finir le niveau."]];
         element.choixN = [];
 
-        decor = [{"x":0,"y":20,"type":new Barre},
-                 {"x":100,"y":90,"type":new Liane},
-                 {"x":400,"y":-50,"type":new PanneauBas},
-                 {"x":750,"y":720,"type":new PanneauDanger},
-                 {"x":700,"y":1310,"type":new Bush},
-                 {"x":740,"y":1310,"type":new Bush},
-                 {"x":800,"y":1310,"type":new Bush2},
-                 {"x":830,"y":1310,"type":new Bush},
-                 {"x":890,"y":1310,"type":new Bush},
-                 {"x":1300,"y":1310,"type":new Bush},
-                 {"x":940,"y":1310,"type":new Bush3},
-                 {"x":1000,"y":1310,"type":new Bush2},
-                 {"x":1070,"y":1310,"type":new Bush2},
-                 {"x":1200,"y":1310,"type":new Bush3},
-                 {"x":1700,"y":800,"type":new Brique},
-                 {"x":1749,"y":800,"type":new Brique},
-                 {"x":1798,"y":800,"type":new Brique}];
+        decor = [{"x":0,"y":20,"type":new Barre,"img":new Image()},
+                 {"x":100,"y":90,"type":new Liane,"img":new Image()},
+                 {"x":400,"y":-50,"type":new PanneauBas,"img":new Image()},
+                 {"x":750,"y":720,"type":new PanneauDanger,"img":new Image()},
+                 {"x":700,"y":1310,"type":new Bush,"img":new Image()},
+                 {"x":740,"y":1310,"type":new Bush,"img":new Image()},
+                 {"x":800,"y":1310,"type":new Bush2,"img":new Image()},
+                 {"x":830,"y":1310,"type":new Bush,"img":new Image()},
+                 {"x":890,"y":1310,"type":new Bush,"img":new Image()},
+                 {"x":1300,"y":1310,"type":new Bush,"img":new Image()},
+                 {"x":940,"y":1310,"type":new Bush3,"img":new Image()},
+                 {"x":1000,"y":1310,"type":new Bush2,"img":new Image()},
+                 {"x":1070,"y":1310,"type":new Bush2,"img":new Image()},
+                 {"x":1200,"y":1310,"type":new Bush3,"img":new Image()},
+                 {"x":1700,"y":800,"type":new Brique,"img":new Image()},
+                 {"x":1749,"y":800,"type":new Brique,"img":new Image()},
+                 {"x":1798,"y":800,"type":new Brique,"img":new Image()}];
 
-        actor = [{"x":20,"y":0,"vx":0,"vy":0,"sens":1,"g":-20,"frame":0,"saut":0,"moves":new Boule,"img":new Image()},
-                 {"x":550,"y":700,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Interrupteur,"img":new Image(),"plate":[200,320,1000,ep]},
-                 {"x":1380,"y":920,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Interrupteur,"img":new Image(),"plate":[1350,520,150,ep]},
-                 {"x":800,"y":1300,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Champi,"img":new Image()},
-                 {"x":2000,"y":500,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new MageFeu,"img":new Image()},
-                 {"x":2000,"y":1100,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Bombe,"img":new Image()}];
+        actor = [{"x":20,"y":0,"vx":0,"vy":0,"sens":1,"g":-20,"frame":0,"saut":0,"moves":new Boule},
+                 {"x":550,"y":700,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Interrupteur,"plate":[200,320,1000,ep]},
+                 {"x":1380,"y":920,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Interrupteur,"plate":[1350,520,150,ep]},
+                 {"x":800,"y":1300,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Champi},
+                 {"x":2000,"y":500,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new MageFeu},
+                 {"x":2000,"y":1100,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Bombe}];
         victoire = [1900,0,1000,850,2300,849];
         nVictoire = 1;
         chute = [5000,"2-1"];
@@ -968,10 +954,10 @@ function selection(choixNiveau){
 
         decor = [];
 
-        actor = [{"x":160,"y":0,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule,"img":new Image()},
-                 {"x":160,"y":500,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new MageFeu,"img":new Image()},
-                 {"x":10,"y":0,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Champi,"img":new Image()},
-                 {"x":900,"y":0,"vx":0,"vy":0,"sens":-1,"g":0,"frame":0,"saut":0,"moves":new Champi,"img":new Image()}];
+        actor = [{"x":160,"y":0,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule},
+                 {"x":160,"y":500,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new MageFeu},
+                 {"x":10,"y":0,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Champi},
+                 {"x":900,"y":0,"vx":0,"vy":0,"sens":-1,"g":0,"frame":0,"saut":0,"moves":new Champi}];
         victoire = [100,450,100,100,400,549];
         nVictoire = 1;
         chute = [5000,"2-2"];
@@ -986,8 +972,8 @@ function selection(choixNiveau){
 
         decor = [];
 
-        actor = [{"x":20,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule,"img":new Image()},
-                 {"x":800,"y":-250,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Bipede,"img":new Image()}];
+        actor = [{"x":20,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule},
+                 {"x":800,"y":-250,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Bipede}];
         victoire = [0,0,0,0,0,0];
         nVictoire = 180;
         chute = [500,"2-3"];
@@ -1002,7 +988,7 @@ function selection(choixNiveau){
 
         decor = [{"x":0,"y":20,"type":new Barre,"img":new Image()}];
 
-        actor = [{"x":20,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule,"img":new Image()}];
+        actor = [{"x":20,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule}];
         victoire = [0,0,0,0,0,0];
         nVictoire = 180;
         chute = [500,"2-4"];
@@ -1016,8 +1002,8 @@ function selection(choixNiveau){
 
         decor = [];
 
-        actor = [{"x":20,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule,"img":new Image()},
-                 {"x":300,"y":-0,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Interrupteur,"img":new Image(),"plate":[1100,520,500,ep]}];
+        actor = [{"x":20,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule},
+                 {"x":300,"y":-0,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Interrupteur,"plate":[1100,520,500,ep]}];
         victoire = [0,0,0,0,0,0];
         nVictoire = 180;
         chute = [2000,"2-4"];
@@ -1031,8 +1017,8 @@ function selection(choixNiveau){
 
         decor = [];
 
-        actor = [{"x":20,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule,"img":new Image()},
-                 {"x":300,"y":-0,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champi,"img":new Image()}];
+        actor = [{"x":20,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule},
+                 {"x":300,"y":-0,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champi}];
         victoire = [0,0,0,0,0,0];
         nVictoire = 180;
         chute = [2000,"2-4"];
@@ -1047,8 +1033,8 @@ function selection(choixNiveau){
 
         decor = [];
 
-        actor = [{"x":10,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule,"img":new Image()},
-                 {"x":1550,"y":1700-ep,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new MageFeu,"img":new Image()}];
+        actor = [{"x":10,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule},
+                 {"x":1550,"y":1700-ep,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new MageFeu}];
         victoire = [0,0,0,0,0,0];
         nVictoire = 180;
         chute = [2000,"2-5"];
@@ -1066,16 +1052,16 @@ function selection(choixNiveau){
                  {"x":2100+ep,"y":470,"type":new Mushroom,"img":new Image()},
                  {"x":2370,"y":-90,"type":new Cristal,"img":new Image()}];
 
-        actor = [{"x":2000,"y":100,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageFeu,"img":new Image()},
-                 {"x":2300,"y":100,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageElectro ,"img":new Image()},
-                 {"x":1100,"y":100,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()},
-                 {"x":2300,"y":550,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Interrupteur,"img":new Image(),"plate":[1499,250,402+ep,ep]},
-                 {"x":500,"y":300,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Psychos,"img":new Image()},
-                 {"x":1300,"y":1000,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Carnivore,"img":new Image()},
-                 {"x":1600,"y":1200,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageTerre,"img":new Image()},
-                 {"x":-250,"y":2000,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Esprit,"img":new Image()},
-                 {"x":2180,"y":1600,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champi,"img":new Image()},
-                 {"x":2500 + ep / 2,"y":1400,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Jumper,"img":new Image()}];
+        actor = [{"x":2000,"y":100,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageFeu},
+                 {"x":2300,"y":100,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageElectro },
+                 {"x":1100,"y":100,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule},
+                 {"x":2300,"y":550,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Interrupteur,"plate":[1499,250,402+ep,ep]},
+                 {"x":500,"y":300,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Psychos},
+                 {"x":1300,"y":1000,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Carnivore},
+                 {"x":1600,"y":1200,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageTerre},
+                 {"x":-250,"y":2000,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Esprit},
+                 {"x":2180,"y":1600,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champi},
+                 {"x":2500 + ep / 2,"y":1400,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Jumper}];
         actor[3].moves.res = [1,4,5,6,7,8,9];
         victoire = [0,0,0,0,0,0];
         nVictoire = 3;
@@ -1126,10 +1112,14 @@ function selection(choixNiveau){
         nVictoire = 1;
         chute = [2000,"3-1"];
     }
-    preparation();
     decor.forEach(
         function(c) {
             c.img.src = "images/" + c.type.img + ".png";
+        }
+    );
+    actor.forEach(
+        function(c) {
+            c.img = images[c.moves.img];
         }
     );
 }
