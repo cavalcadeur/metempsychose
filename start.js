@@ -1,10 +1,8 @@
-var Widget;
-
 var W,H;
-var ctx,ctxF,mobile,fixe;
-
+var ctx,canvas;
+var Widget;
 var X = 0;
-var Y = 0;
+var Y = 400;
 var ep = 50;
 var j = 0;
 var keys = [];
@@ -26,8 +24,8 @@ var imgFeuY = 35;
 var imgBalleX = 35;
 var imgBalleY = 35;
 var cible;
-var filin = 0.2;
-var filinVit = 0.01;
+var filin = 0.05;
+var filinVit = 0.002;
 var mort = 0;
 var vj;
 var trans = 0;
@@ -351,6 +349,12 @@ function Titre(){
     this.sy = 20;
 }
 
+function Titre2(){
+    this.img = "Titre2";
+    this.sx = 0;
+    this.sy = 20;
+}
+
 
 var element = {"feu":[],"balle":[],"panneau":[],"choixN":[]};
 
@@ -379,8 +383,8 @@ function rnd(max){
 function resize(){
     W = window.innerWidth;
     H = window.innerHeight;
-    fixe.setAttribute("width",W);
-    fixe.setAttribute("height",H);
+    canvas.setAttribute("width",W);
+    canvas.setAttribute("height",H);
 }
 
 function tombe(n){
@@ -615,17 +619,11 @@ function action(){
 }
 
 function start(){
-    mobile = document.querySelector("#mobile");
-    fixe = document.querySelector("#fixe");
-    ctx = mobile.getContext("2d");
-    ctxF = fixe.getContext("2d");
-    W = mobile.width;
-    H = mobile.height;
+    canvas = document.querySelector("#canvas");
+    ctx = canvas.getContext("2d");
+    W = canvas.width;
+    H = canvas.height;
     resize();
-    mobile.setAttribute('width', 3000);
-    mobile.setAttribute('height', 2000);
-    mobile.style.width = '3000px';
-    mobile.style.height = '2000px';
     Widget = require("wdg");
     square = new Widget({id: "square"});
     decor.forEach(
@@ -658,7 +656,6 @@ function preparation(){
             c.img = images[c.moves.img];
         }
     );
-    fond();
     animation();
 }
 
@@ -680,8 +677,9 @@ function animation(){
 }
 
 function paint(t){
+    if (actor[j].y > chute[0]) selection(chute[1]);
     filin += filinVit;
-    if (filin > 0.6 | filin < 0.1) filinVit = filinVit * -1;
+    if (filin > 0.2 | filin < 0.05) filinVit = filinVit * -1;
     if (1 == keys[39]) moveRight(j);
     if (1 == keys[37]) moveLeft(j);
     if ((1 == keys[96] | 1 == keys[88]) && balles > 0) transfert();
@@ -745,23 +743,41 @@ function paint(t){
             }
         }
     }
-    if (actor[j].y > chute[0]) selection(chute[1]);
-//    ctx.scrollLeft = actor[j].x - 300;
-//    ctx.scrollTop = actor[j].y - H ;
     X = actor[j].x - 300;
     Y = actor[j].y - H / 2;
-    mobile.style.top = -Y + "px";
-    mobile.style.left = -X + "px";
     draw();
+    cible = proche();
+    ctx.lineWidth = filin;
+    ctx.strokeStyle = "rgb(230,230,230)";
+    ctx.beginPath();
+    ctx.moveTo(actor[j].x - X,actor[j].y  - actor[j].moves.sy / 2 - Y);
+    ctx.lineTo(actor[cible].x - X,actor[cible].y - actor[cible].moves.sy / 2 - Y);
+    ctx.closePath();
+    ctx.stroke();
     t2 = t;
-
+    square.css({
+        position: "absolute",
+        left: -X + "px",
+        top: -Y + "px"
+    });
 }
 
 function draw() {
-    ctxF.clearRect(0,0,W,H);
+    ctx.drawImage(imgFond,0,0,W,H);
+    ctx.fillStyle = "rgb(0,114,15)";
+    element.panneau.forEach(
+        function(e) {
+            ctx.drawImage(imgPancarte,e[0] - X - 30,e[1] - 70 - Y);
+        }
+    );
+    element.choixN.forEach(
+        function(e) {
+            ctx.drawImage(imgPorte,e[0] - X - 30,e[1] - 70 - Y);
+        }
+    );
     element.balle.forEach(
         function(e) {
-            ctxF.drawImage(imgBalle,e[0] - X,e[1] - Y);
+            ctx.drawImage(imgBalle,e[0] - X,e[1] - Y);
             if (actor[j].y - actor[j].moves.sy < e[1] + imgBalleY / 2 && actor[j].y > e[1] + imgBalleY / 2 && actor[j].x - actor[j].moves.sx / 2 < e[0] + imgBalleX / 2 && actor[j].x + actor[j].moves.sx / 2 > e[0] + imgFeuX / 2){
                 element.balle.splice(element.balle.indexOf(e),1);
                 balles += 1;
@@ -771,25 +787,35 @@ function draw() {
     actor.forEach(
         function(c) {
             if (c.moves.capa == "instable"  | c.moves.capa == "grossissement"){
-                ctxF.save();
-                ctxF.translate(c.x - X,c.y - c.moves.sy * c.moves.size / 2 - Y);
-                ctxF.scale(c.moves.size,c.moves.size);
-                ctxF.rotate(c.moves.r);
-                ctxF.drawImage(c.img,- c.moves.sx / 2,- c.moves.sy / 2);
-                ctxF.restore();
+                ctx.save();
+                ctx.translate(c.x - X,c.y - c.moves.sy * c.moves.size / 2 - Y);
+                ctx.scale(c.moves.size,c.moves.size);
+                ctx.rotate(c.moves.r);
+                ctx.drawImage(c.img,- c.moves.sx / 2,- c.moves.sy / 2);
+                ctx.restore();
             }
             else {
-                ctxF.save();
-                ctxF.translate(c.x - X,c.y - c.moves.sy / 2 - Y);
-                ctxF.scale(c.sens,1);
-                ctxF.drawImage(c.img,- c.moves.sx / 2,- c.moves.sy / 2);
-                ctxF.restore();
+                ctx.save();
+                ctx.translate(c.x - X,c.y - c.moves.sy / 2 - Y);
+                ctx.scale(c.sens,1);
+                ctx.drawImage(c.img,- c.moves.sx / 2,- c.moves.sy / 2);
+                ctx.restore();
             }
+        }
+    );
+    niveau.forEach(
+        function(c) {
+            ctx.fillRect(c[0] - X,c[1] - Y,c[2],c[3]);
+        }
+    );
+    decor.forEach(
+        function(c) {
+            ctx.drawImage(c.img,c.x - c.type.sx - X,c.y - c.type.sy - Y);
         }
     );
     element.feu.forEach(
         function(e) {
-            ctxF.drawImage(imgFeu,e[0] - X,e[1] - Y);
+            ctx.drawImage(imgFeu,e[0] - X,e[1] - Y);
             e[0] += e[2];
             niveau.forEach(
                 function(c) {
@@ -809,28 +835,20 @@ function draw() {
         }
     );
     if (laserPsy > -1 && Math.abs(actor[j].y - actor[laserPsy].y) < 500) {
-        ctxF.strokeStyle = "rgb(100,0,100)";
-        ctxF.lineWidth = 5;
-        ctxF.beginPath();
-        ctxF.moveTo(actor[j].x - X,actor[j].y  - actor[j].moves.sy / 2 - Y);
-        ctxF.lineTo(actor[laserPsy].x - X,actor[laserPsy].y - actor[laserPsy].moves.sy / 2 - Y);
-        ctxF.closePath();
-        ctxF.stroke();
+        ctx.strokeStyle = "rgb(100,0,100)";
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(actor[j].x - X,actor[j].y  - actor[j].moves.sy / 2 - Y);
+        ctx.lineTo(actor[laserPsy].x - X,actor[laserPsy].y - actor[laserPsy].moves.sy / 2 - Y);
+        ctx.closePath();
+        ctx.stroke();
     }
-    cible = proche();
-    ctxF.lineWidth = filin;
-    ctxF.strokeStyle = "rgb(230,230,230)";
-    ctxF.beginPath();
-    ctxF.moveTo(actor[j].x - X,actor[j].y  - actor[j].moves.sy / 2 - Y);
-    ctxF.lineTo(actor[cible].x - X,actor[cible].y - actor[cible].moves.sy / 2 - Y);
-    ctxF.closePath();
-    ctxF.stroke();
 }
 
 function drawDeath() {
     if (actor[j].y > Y + 1000) {
-        mort = 0;
         selection(chute[1]);
+        mort = 0;
         animation();
     }
     else{
@@ -850,8 +868,6 @@ function drawTransfert() {
     else{
         X += Math.round((actor[vj].x - actor[j].x) / 30) ;
         Y += Math.round((actor[vj].y - actor[j].y) / 30) ;
-        mobile.style.top = -Y + "px";
-        mobile.style.left = -X + "px";
         draw();
         window.requestAnimationFrame(drawTransfert);
     }
@@ -870,31 +886,6 @@ function drawMap() {
     animation();
 }
 
-function fond(){
-    ctx.clearRect(0,0,3000,2000);
-    niveau.forEach(
-        function(c) {
-            ctx.fillRect(c[0],c[1],c[2],c[3]);
-        }
-    );
-    decor.forEach(
-        function(c) {
-            ctx.drawImage(c.img,c.x - c.type.sx,c.y - c.type.sy);
-        }
-    );
-    ctx.fillStyle = "rgb(0,114,15)";
-    element.panneau.forEach(
-        function(e) {
-            ctx.drawImage(imgPancarte,e[0] - 30,e[1] - 70);
-        }
-    );
-    element.choixN.forEach(
-        function(e) {
-            ctx.drawImage(imgPorte,e[0] - 30,e[1] - 70);
-        }
-    );
-}
-
 function finNiveau(){
     element.choixN.push([victoire[4],victoire[5],"select"]);
     nVictoire = 1000;
@@ -905,23 +896,39 @@ function selection(choixNiveau){
     j = 0;
     element = {"feu":[],"balle":[],"panneau":[],"choixN":[]};
     if (choixNiveau == "select"){
-        niveau = [[500,520,500,ep],[700,820,500,ep],[1200,820,500,ep],[500,1120,500,ep]];
+        niveau = [[0,20,500,ep],[200,320,500,ep],[700,320,500,ep],[0,620,500,ep]];
 
         element.balle = [];
         balles = 0;
-        element.panneau = [[630,520,"Monde 1 : difficile"],[1140,820,"Monde 2 : adresse"],[630,1120,"Monde 3 : moyennement dur"]];
-        element.choixN = [[800,520,"1-1"],[950,520,"1-2"],[950,820,"2-1"],[800,820,"2-2"],[1400,820,"2-3"],[1550,820,"2-4"],[1250,820,"2-5"],[800,1120,"3-1"]];
+        element.panneau = [[130,20,"Monde 1 : difficile"],[640,320,"Monde 2 : adresse"],[130,620,"Monde 3 : moyennement dur"]];
+        element.choixN = [[300,20,"1-1"],[450,20,"1-2"],[450,320,"2-1"],[300,320,"2-2"],[900,320,"2-3"],[1050,320,"2-4"],[750,320,"2-5"],[300,620,"3-1"]];
 
-        decor = [{"x":500,"y":520,"type":new Barre,"frame":0,"img":new Image()},
-                 {"x":700,"y":820,"type":new Barre,"img":new Image()},
-                 {"x":1200,"y":820,"type":new Barre,"img":new Image()},
-                 {"x":500,"y":100,"type":new Titre,"img":new Image()},
-                 {"x":500,"y":1120,"type":new Barre,"img":new Image()}];
+        decor = [{"x":0,"y":20,"type":new Barre,"frame":0,"img":new Image()},
+                 {"x":200,"y":320,"type":new Barre,"img":new Image()},
+                 {"x":700,"y":320,"type":new Barre,"img":new Image()},
+                 {"x":0,"y":-400,"type":new Titre,"img":new Image()},
+                 {"x":0,"y":620,"type":new Barre,"img":new Image()}];
 
-        actor = [{"x":520,"y":500,"vx":0,"vy":0,"g":-20,"sens":1,"saut":0,"moves":new Boule}];
+        actor = [{"x":20,"y":0,"vx":0,"vy":0,"g":-20,"sens":1,"saut":0,"moves":new Boule}];
         victoire = [0,0,0,0];
-        nVictoire = 55555;
-        chute = [5000,"select"];
+        nVictoire = 0;
+        chute = [5000,"aide"];
+    }
+    else if (choixNiveau == "aide"){
+        niveau = [[0,20,500,ep],[ep * -1,20 - ep,ep,ep],[500,20 - ep,ep,ep],[0,420,500,ep]];
+
+        element.balle = [[450,-20]];
+        balles = 0;
+        element.panneau = [[50,20,"Bienvenue dans l'aide : pour faire disparaître les messages cliquez dessus."],[200,20,"Vous pouvez sauter avec la barre espace ou tirer des boules de feu."],[350,20,"Si vous ramassez une sphère bleue vous pourrez vous métempsychoser avec 0 ou x."],[350,420,"Maintenant que vous avez compris le principe, vous pouvez retourner au menu avec la porte."]];
+        element.choixN = [[450,420,"select"]];
+
+        decor = [{"x":0,"y":20,"type":new Barre,"frame":0,"img":new Image()},
+                 {"x":0,"y":-300,"type":new Titre2,"frame":0,"img":new Image()}];
+
+        actor = [{"x":50,"y":0,"vx":0,"vy":0,"g":-20,"sens":1,"saut":0,"moves":new Boule},{"x":50,"y":420,"vx":0,"vy":0,"g":0,"sens":1,"saut":0,"moves":new Champique}];
+        victoire = [0,0,0,0];
+        nVictoire = 0;
+        chute = [5000,"aide"];
     }
     else if (choixNiveau == "2-1"){
         niveau = [[0,20,500,ep],[200,320,100,ep],[450,800,400,ep],[600,1400,900,ep],[550,1600,200,ep],[1350,1000,150,ep],[1700,800,150,ep],[1900,0,ep,850],[1900,849,600,ep],[1750,1250,400,ep]];
@@ -1137,5 +1144,4 @@ function selection(choixNiveau){
             c.img = images[c.moves.img];
         }
     );
-    fond();
 }

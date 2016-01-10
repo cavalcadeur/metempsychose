@@ -1,20 +1,5 @@
-html {
-    height: 100%;
-}
-
 body {
-	position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
-	background-image: url(images/fond3.png);
-	background-size: contain;
+	overflow: hidden;
 }
 
 #alert {
@@ -31,7 +16,7 @@ body {
 	opacity:0.85;	
     font-weight: bold;
     font-size: 150%;
-    padding: 50px;
+    padding: 5px;
     cursor: pointer;
     z-index: 2;
 }
@@ -41,17 +26,7 @@ body {
     transition: .5s transform;
 }
 
-#mobile {
-	position: absolute;
-	left: 0;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	width: 100%;
-	height: 100%;
-}
-
-#fixe {
+canvas {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -67,9 +42,8 @@ body {
   top: 0;
   right: 0;
   bottom: 0;
+  background: rgb(0,0,0,0);
   overflow: hidden;
-  background-color: white;
-  opacity:0;	
 }
 
 .nuage {
