@@ -40,7 +40,7 @@ imgFond.onload = function (){
     console.log(imgFond);
 };
 
-var imagesList = ["bombe","bombe2","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi3","champique","fantome","inter","jumper","psychos","T","carnivore"];
+var imagesList = ["bombe","bombe2","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","fantome","inter","jumper","psychos","T","carnivore"];
 var images = {};
 
 function loading(){
@@ -143,7 +143,7 @@ function Champique(){
 function Champi(){
     this.saut = 0;
     this.vit = 3;
-    this.img = "champi3";
+    this.img = "champi4";
     this.sx = 200;
     this.sy = 229;
     this.capa = "";
@@ -283,6 +283,12 @@ function Barre(){
     this.sy = 0;
 }
 
+function Falaise(){
+    this.img = "falaise";
+    this.sx = 0;
+    this.sy = 0;
+}
+
 function Bush(){
     this.img = "bush";
     this.sx = 0;
@@ -326,7 +332,7 @@ function PanneauDanger(){
 }
 
 function Brique(){
-    this.img = "brick";
+    this.img = "bloc1";
     this.sx = 0;
     this.sy = 0;
 }
@@ -401,7 +407,11 @@ function tombe(n){
                 if (actor[n].g > 0) actor[n].g = 0;
                 if (actor[n].saut != 0 && actor[n].g == 0){
                     actor[n].saut -= 1;
-                    if (actor[n].moves.capa == "lourd") c[1] += 10;
+                    if (actor[n].moves.capa == "lourd") {c[1] += 10;
+                                                         for (var iii = 0; iii < 5; iii++) {
+                                                             var taille = rnd(100) + 50;
+                                                             newExplosion(actor[n].x - 50 + "px",actor[n].y - 75  + "px",actor[n].x - 100 + rnd(200) + "px",actor[n].y - 155 + rnd(200)+ "px", taille + "px",1,1);
+                                                         }}
                 }
                 actor[n].y = c[1];
                 sautG = 0;
@@ -574,8 +584,10 @@ function contact(i,k){
     if (actor.length == 1) return;
     var array = actor[i].moves.att;
     if (array.length != 0){
-        if (Math.abs(actor[i].x - actor[k].x) < actor[i].moves.sx / 2 + actor[k].moves.sx / 2 && Math.abs(actor[i].y - actor[i].moves.sy / 2 - (actor[k].y - actor[k].moves.sy / 2)) < actor[i].moves.sy / 2 + actor[k].moves.sy / 2) coup(k,array[array.length - 1]);
+        if (Math.abs(actor[i].x - actor[k].x) < actor[i].moves.sx / 2 + actor[k].moves.sx / 2 && Math.abs(actor[i].y - actor[i].moves.sy / 2 - (actor[k].y - actor[k].moves.sy / 2)) < actor[i].moves.sy / 2 + actor[k].moves.sy / 2){
+            coup(k,array[array.length - 1]);
         }
+    }
 }
 
 function action(){
@@ -682,6 +694,7 @@ function paint(t){
     if (filin > 0.2 | filin < 0.05) filinVit = filinVit * -1;
     if (1 == keys[39]) moveRight(j);
     if (1 == keys[37]) moveLeft(j);
+    if (1 == keys[67]) cross();
     if ((1 == keys[96] | 1 == keys[88]) && balles > 0) transfert();
     if (1 == keys[32]) action();
     var victorieux = 0;
@@ -1117,14 +1130,14 @@ function selection(choixNiveau){
         chute = [5000,"1-1"];
     }
     else if (choixNiveau == "3-1"){
-        niveau = [[0,300,ep,ep],[250,300,400,ep],[650,0,400,ep],[650-ep,450,ep,ep],[450,750,600,ep],[250,650,ep,ep],[100,500,ep,ep],[1050,300,400,ep]];
+        niveau = [[0,300,100,ep],[250,300,400,ep],[650,0,400,ep],[650-ep,450,ep,ep],[450,750,600,ep],[250,650,ep,ep],[100,500,ep,ep],[1050,300,400,ep]];
 
         element.balle = [[600,230],[700,650],[700,230]];
         balles = 0;
         element.panneau = [[400,300,"Ammenez le mage sur la plate-forme d'en face."]];
         element.choixN = [[1940+ep,120,"select"],[1160,-700,"bonus"]];
 
-        decor = [];
+        decor = [{"x":0,"y":300,"type":new Falaise,"img":new Image()}];
 
         actor = [{"x":300,"y":100,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new MageFeu,"img":new Image()},
                  {"x":900,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Bipede,"img":new Image()},
