@@ -61,8 +61,8 @@ function Bombe() {
     this.saut = 0;
     this.vit = 3;
     this.img = "bombe";
-    this.sx = 35;
-    this.sy = 40;
+    this.sx = 70;
+    this.sy = 80;
     this.capa = "explode";
     this.IA = "allerRetour";
     this.att = [];
@@ -1124,7 +1124,7 @@ function selection(choixNiveau){
                  {"x":2300,"y":1200,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageElectro,"img":new Image()},
                  {"x":870,"y":885,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Interrupteur,"img":new Image(),"plate":[404,800,450,ep]},
                  {"x":1900,"y":1000,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Interrupteur,"img":new Image(),"plate":[1100,1000,850,ep]},
-                 {"x":1370,"y":600,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Bombe,"img":new Image()},
+                 {"x":1370,"y":640,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Bombe,"img":new Image()},
                  {"x":1370,"y":1000,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Psychos,"img":new Image()}];
         victoire = [2000,1200,400,400,2000,1550];
         nVictoire = 2;
