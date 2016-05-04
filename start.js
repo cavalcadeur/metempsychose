@@ -8,7 +8,7 @@ var j = 0;
 var keys = [];
 var metampsy = 0;
 var imgFond = new Image();
-imgFond.src = "images/fond3.png";
+imgFond.src = "images/fond4.png";
 var imgFeu = new Image();
 imgFeu.src = "images/feu.png";
 var imgBalle = new Image();
@@ -168,10 +168,10 @@ function GraviChampi(){
 
 function Jumper(){
     this.saut = 20;
-    this.vit = 0;
+    this.vit = 1;
     this.img = "jumper";
-    this.sx = 60;
-    this.sy = 56;
+    this.sx = 43;
+    this.sy = 80;
     this.capa = "";
     this.IA = "simpleJump";
     this.att = [2,4];
@@ -777,7 +777,7 @@ function paint(t){
 
 function draw() {
     ctx.drawImage(imgFond,0,0,W,H);
-    ctx.fillStyle = "rgb(0,114,15)";
+    ctx.strokeStyle = "rgb(0,0,0)";
     element.panneau.forEach(
         function(e) {
             ctx.drawImage(imgPancarte,e[0] - X - 30,e[1] - 70 - Y);
@@ -818,7 +818,8 @@ function draw() {
     );
     niveau.forEach(
         function(c) {
-            ctx.fillRect(c[0] - X,c[1] - Y,c[2],c[3]);
+            ctx.lineWidth = 2;
+            ctx.strokeRect(c[0] - X,c[1] - Y,c[2],c[3]);
         }
     );
     decor.forEach(
