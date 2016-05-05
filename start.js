@@ -690,7 +690,7 @@ function paint(t){
     if (filin > 0.2 | filin < 0.05) filinVit = filinVit * -1;
     if (1 == keys[39]) moveRight(j);
     if (1 == keys[37]) moveLeft(j);
-    if (1 == keys[67]) cross();
+//    if (1 == keys[67]) cross();
     if ((1 == keys[96] | 1 == keys[88]) && balles > 0) transfert();
     if (1 == keys[32]) action();
     var victorieux = 0;
@@ -870,7 +870,7 @@ function drawDeath() {
 }
 
 function drawTransfert() {
-    if (((actor[vj].x - actor[j].x > 0 && X >= actor[vj].x - 300) | (actor[vj].x - actor[j].x < 0 && X <= actor[vj].x - 300)) | ((actor[vj].y - actor[j].y > 0 && Y >= actor[vj].y - H / 2) | (actor[vj].y - actor[j].y < 0 && Y <= actor[vj].y - H / 2))){
+    if (((actor[vj].x - actor[j].x > 0 && X >= actor[vj].x - W / 2) | (actor[vj].x - actor[j].x < 0 && X <= actor[vj].x - W / 2)) | ((actor[vj].y - actor[j].y > 0 && Y >= actor[vj].y - H / 2) | (actor[vj].y - actor[j].y < 0 && Y <= actor[vj].y - H / 2))){
         j = vj;
         trans = 0;
         animation();
@@ -1162,7 +1162,7 @@ function selection(choixNiveau){
         element.panneau = [[400,300,"Ammenez le mage sur la plate-forme d'en face."]];
         element.choixN = [[1940+ep,120,"select"],[1160,-700,"bonus"]];
 
-        decor = [{"x":0,"y":300,"type":new Falaise,"img":new Image()}];
+        decor = [];
 
         actor = [{"x":300,"y":100,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new MageFeu,"img":new Image()},
                  {"x":900,"y":0,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Bipede,"img":new Image()},
