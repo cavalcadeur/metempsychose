@@ -8,7 +8,7 @@ var j = 0;
 var keys = [];
 var metampsy = 0;
 var imgFond = new Image();
-imgFond.src = "images/fond5.jpeg";
+imgFond.src = "images/fond4.png";
 var imgFeu = new Image();
 imgFeu.src = "images/feu.png";
 var imgBalle = new Image();
@@ -818,8 +818,8 @@ function draw() {
     );
     niveau.forEach(
         function(c) {
-            ctx.lineWidth = 2;
-            ctx.strokeRect(c[0] - X,c[1] - Y,c[2],c[3]);
+            ctx.fillStyle = "rgb(100,0,0)";
+            ctx.fillRect(c[0] - X,c[1] - Y,c[2],c[3]);
         }
     );
     decor.forEach(
