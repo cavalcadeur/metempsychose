@@ -89,8 +89,8 @@ function MageElectro(){
     this.saut = 0;
     this.vit = 15;
     this.img = "E";
-    this.sx = 57;
-    this.sy = 91;
+    this.sx = 100;
+    this.sy = 107;
     this.capa = "courseLongue";
     this.IA = "wait";
     this.att = [7];
@@ -912,7 +912,7 @@ function selection(choixNiveau){
         element.balle = [];
         balles = 0;
         element.panneau = [[130,20,"Monde 1 : difficile"],[640,320,"Monde 2 : adresse"],[130,620,"Monde 3 : moyennement dur"]];
-        element.choixN = [[300,20,"1-1"],[450,20,"1-2"],[450,320,"2-1"],[300,320,"2-2"],[900,320,"2-3"],[1050,320,"2-4"],[750,320,"2-5"],[300,620,"3-1"]];
+        element.choixN = [[300,20,"1-1"],[450,20,"1-2"],[450,320,"2-1"],[300,320,"2-2"],[900,320,"2-3"],[1050,320,"2-4"],[750,320,"2-5"],[300,620,"3-1"],[450,620,"3-2"]];
 
         decor = [{"x":0,"y":20,"type":new Barre,"frame":0,"img":new Image()},
                  {"x":200,"y":320,"type":new Barre,"img":new Image()},
@@ -1160,7 +1160,7 @@ function selection(choixNiveau){
         element.balle = [[600,230],[700,650],[700,230]];
         balles = 0;
         element.panneau = [[400,300,"Ammenez le mage sur la plate-forme d'en face."]];
-        element.choixN = [[1940+ep,120,"select"],[1160,-700,"bonus"]];
+        element.choixN = [[1940+ep,120,"select"]];
 
         decor = [];
 
@@ -1171,6 +1171,26 @@ function selection(choixNiveau){
         victoire = [950,0,500,500,1250,300];
         nVictoire = 1;
         chute = [2000,"3-1"];
+    }
+
+    else if (choixNiveau == "3-2"){
+        niveau = [[600,0,500,50],[1050,0,50,500],[600,0,50,500],[600,450,500,50],[0,150,500,50],[0,450,500,50],[0,750,500,50],[1150,450,50,50],[1400,450,100,50]];
+
+        element.balle = [[700,230],[0,100],[450,400],[900,230]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[1450,450,"select"]];
+
+        decor = [];
+
+        actor = [{"x":700,"y":100,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule,"img":new Image()},
+                 {"x":200,"y":100,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new MageElectro,"img":new Image()},
+                 {"x":200,"y":700,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Boule,"img":new Image()},
+                 {"x":10,"y":730,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Interrupteur,"img":new Image(),"plate":[1200,450,200,ep]},
+                 {"x":1175,"y":400,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new MageFeu,"img":new Image()}];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"3-2"];
     }
     decor.forEach(
         function(c) {
