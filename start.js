@@ -947,7 +947,7 @@ function selection(choixNiveau){
         element.balle = [[250,280],[1030,1360],[630,1560],[1730,700],[2070,1150]];
         balles = -4;
         element.panneau = [[130,20,"Attention, il vous faut les 5 balles pour finir le niveau."]];
-        element.choixN = [];
+        element.choixN = [[2300,849]];
 
         decor = [{"x":0,"y":20,"type":new Barre,"img":new Image()},
                  {"x":100,"y":90,"type":new Liane,"img":new Image()},
@@ -973,7 +973,7 @@ function selection(choixNiveau){
                  {"x":800,"y":1300,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Champi},
                  {"x":2000,"y":500,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new MageFeu},
                  {"x":2000,"y":1100,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Bombe}];
-        victoire = [1900,0,1000,850,2300,849];
+        victoire = [0,0,0,0,0,0];
         nVictoire = 1;
         chute = [5000,"2-1"];
     }
@@ -983,7 +983,7 @@ function selection(choixNiveau){
         element.balle = [[1450,160]];
         balles = 0;
         element.panneau = [];
-        element.choixN = [];
+        element.choixN = [[300,550,"select"]];
 
         decor = [];
 
@@ -991,7 +991,7 @@ function selection(choixNiveau){
                  {"x":160,"y":500,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new MageFeu},
                  {"x":10,"y":0,"vx":0,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Champi},
                  {"x":900,"y":0,"vx":0,"vy":0,"sens":-1,"g":0,"frame":0,"saut":0,"moves":new Champi}];
-        victoire = [100,450,100,100,400,549];
+        victoire = [0,0,0,0,0,0];
         nVictoire = 1;
         chute = [5000,"2-2"];
     }
