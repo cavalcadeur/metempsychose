@@ -772,7 +772,11 @@ function paint(t){
 }
 
 function draw() {
-    ctx.drawImage(imgFond,0,0,W,H);
+    if (chute[1] == "aveugle"){
+        ctx.fillStyle = "rgb(0,0,0)";
+        ctx.fillRect(0,0,W,H);
+    }
+    else ctx.drawImage(imgFond,0,0,W,H);
     ctx.strokeStyle = "rgb(0,0,0)";
     element.panneau.forEach(
         function(e) {
@@ -795,6 +799,7 @@ function draw() {
     );
     actor.forEach(
         function(c) {
+            if (chute[1] == "aveugle" && c.moves.capa != "interrupteur") return;
             if (c.moves.capa == "instable"  | c.moves.capa == "grossissement"){
                 ctx.save();
                 ctx.translate(c.x - X,c.y - c.moves.sy * c.moves.size / 2 - Y);
@@ -815,6 +820,7 @@ function draw() {
     niveau.forEach(
         function(c) {
             ctx.fillStyle = "rgb(104,91,12)";
+            if (chute[1] == "aveugle") ctx.fillStyle = "rgb(150,150,150)";
             ctx.fillRect(c[0] - X,c[1] - Y,c[2],c[3]);
         }
     );
@@ -919,7 +925,8 @@ function selection(choixNiveau){
                  {"x":700,"y":320,"type":new Barre,"img":new Image()},
                  {"x":1200,"y":320,"type":new Barre,"img":new Image()},
                  {"x":-200,"y":-400,"type":new Titre,"img":new Image()},
-                 {"x":0,"y":620,"type":new Barre,"img":new Image()}];
+                 {"x":0,"y":620,"type":new Barre,"img":new Image()},
+                 {"x":200,"y":920,"type":new Barre,"img":new Image()}];
 
         actor = [{"x":20,"y":0,"vx":0,"vy":0,"g":-20,"sens":1,"saut":0,"moves":new Boule}];
         victoire = [0,0,0,0];
