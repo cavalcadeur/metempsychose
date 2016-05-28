@@ -945,7 +945,7 @@ function selection(choixNiveau){
         element.balle = [];
         balles = 0;
         element.panneau = [[130,20,"Monde 1 : difficile"],[640,320,"Monde 2 : adresse"],[130,620,"Monde 3 : moyennement dur"],[640,920,"Monde 4 : a l'aveugle"]];
-        element.choixN = [[300,20,"1-1"],[450,20,"1-2"],[450,320,"2-1"],[300,320,"2-2"],[900,320,"2-3"],[1050,320,"2-4"],[750,320,"2-5"],[1200,320,"2-6"],[1350,320,"2-7"],[300,620,"3-1"],[450,620,"3-2"],[450,920,"aveugle"],[300,920,"aveugle2"],[600,920,"aveugle3"]];
+        element.choixN = [[300,20,"1-1"],[450,20,"1-2"],[450,320,"2-1"],[300,320,"2-2"],[900,320,"2-3"],[1050,320,"2-4"],[750,320,"2-5"],[1200,320,"2-6"],[1350,320,"2-7"],[1500,320,"2-8"],[300,620,"3-1"],[450,620,"3-2"],[450,920,"aveugle"],[300,920,"aveugle2"],[600,920,"aveugle3"]];
 
         decor = [{"x":0,"y":20,"type":new Barre,"frame":0,"img":new Image()},
                  {"x":200,"y":320,"type":new Barre,"img":new Image()},
@@ -1004,7 +1004,7 @@ function selection(choixNiveau){
         element.balle = [[250,280],[1030,1360],[630,1560],[1730,700],[2070,1150]];
         balles = -4;
         element.panneau = [[130,20,"Attention, il vous faut les 5 balles pour finir le niveau."]];
-        element.choixN = [[2300,849,"2-1"]];
+        element.choixN = [[2300,849,"select"]];
 
         decor = [{"x":0,"y":20,"type":new Barre,"img":new Image()},
                  {"x":100,"y":90,"type":new Liane,"img":new Image()},
@@ -1082,6 +1082,21 @@ function selection(choixNiveau){
         victoire = [0,0,0,0,0,0];
         nVictoire = 180;
         chute = [500,"2-4"];
+    }
+else if (choixNiveau == "2-8"){
+        niveau = [[100,120,500,ep],[640,170,ep,ep],[730,220,ep,ep],[820,270,ep,ep],[910,320,ep,ep],[1000,370,500,ep]];
+
+        element.balle = [];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[1150,390,"select"]];
+
+        decor = [{"x":100,"y":120,"type":new Barre,"img":new Image()}];
+
+        actor = [{"x":120,"y":10,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Bipede}];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 180;
+        chute = [500,"2-8"];
     }
     else if (choixNiveau == "bonus"){
         niveau = [[0,120,200,ep],[0,320,200,ep],[0,520,200,ep],[0,120,ep,400+ep],[200-ep,120,ep,400+ep],[300,120,200,ep],[300,520,200,ep],[300,120,ep,400+ep],[500-ep,120,ep,400+ep],[600,120,ep,400+ep],[900,120,ep,400+ep],[599+ep,120,(300-ep)/4 + 1,(400+ep)/4],[600+ep+(300-ep)/4,120+(400+ep)/4,(300-ep)/4,(400+ep)/4],[600+ep+(300-ep)/2,120+(400+ep)/2,(300-ep)/4,(400+ep)/4],[600+ep+(300-ep)/4*3,120+(400+ep)/4*3,(300-ep)/4+1,(400+ep)/4],[1000+ep,120,ep,400+ep],[1300,120,ep,400+ep],[1000+ep,520,300-ep,ep],[1400,120,200,ep],[1400,320,200,ep],[1400,520,200,ep],[1400,120,ep,201],[1600-ep,320,ep,201]];
