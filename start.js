@@ -40,7 +40,7 @@ imgFond.onload = function (){
     console.log(imgFond);
 };
 
-var imagesList = ["bombe","bombe2","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","fantome","inter","jumper","psychos","T","carnivore"];
+var imagesList = ["bombe","bombe2","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","fantome","inter","jumper","psychos","T","carnivore","T2"];
 var images = {};
 
 function loading(){
@@ -95,6 +95,19 @@ function MageElectro(){
     this.IA = "wait";
     this.att = [7];
     this.res = [7];
+    this.anim = ["w",0];
+}
+
+function MageTeleportation(){
+    this.saut = 0;
+    this.vit = 3;
+    this.img = "T2";
+    this.sx = 100;
+    this.sy = 107;
+    this.capa = "teleportation";
+    this.IA = "wait";
+    this.att = [];
+    this.res = [];
     this.anim = ["w",0];
 }
 
@@ -611,6 +624,10 @@ function action(){
         keys[32] = 0;
         element.feu.push([actor[j].x + 10 * actor[j].sens,actor[j].y - actor[j].moves.sy / 2,10 * actor[j].sens]);
     }
+    if (actor[j].moves.capa == "teleportation"){
+        newExplosion(actor[j].x - 50 + "px",actor[j].y - 105  + "px",actor[j].x - 70 - rnd(30) + "px",actor[j].y - 155 - rnd(30)+ "px", rnd(100) + 50 + "px",2,1);
+        actor[j].x += 100 * actor[j].sens;        
+    }
     element.choixN.forEach(
         function(e) {
             if (inAction == 1 && Math.hypot(actor[j].x - e[0],actor[j].y - e[1]) < 30){
@@ -948,8 +965,8 @@ function selection(choixNiveau){
 
         element.balle = [[450,-20]];
         balles = 0;
-        element.panneau = [[50,20,"Bienvenue dans l'aide : pour faire disparaître les messages cliquez dessus."],[200,20,"Vous pouvez sauter avec la barre espace ou tirer des boules de feu."],[350,20,"Si vous ramassez une sphère bleue vous pourrez vous métempsychoser avec 0 ou x."],[350,420,"Maintenant que vous avez compris le principe, vous pouvez retourner au menu avec la porte."]];
-        element.choixN = [[450,420,"select"]];
+        element.panneau = [[50,20,"Bienvenue dans l'aide : pour faire disparaître les messages cliquez dessus."],[200,20,"Vous pouvez sauter avec la barre espace ou tirer des boules de feu."],[350,20,"Si vous ramassez une sphère bleue vous pourrez vous métempsychoser avec 0 ou x."],[350,420,"Maintenant que vous avez compris le principe, vous pouvez retourner au menu avec la porte de droite."],[150,420,"La porte de gauche permet d'en apprendre plus sur les différents personnages du jeu."]];
+        element.choixN = [[450,420,"select"],[50,420,"aide2"]];
 
         decor = [{"x":0,"y":20,"type":new Barre,"frame":0,"img":new Image()},
                  {"x":0,"y":-300,"type":new Titre2,"frame":0,"img":new Image()}];
@@ -959,6 +976,28 @@ function selection(choixNiveau){
         nVictoire = 0;
         chute = [5000,"aide"];
     }
+
+    else if (choixNiveau == "aide2"){
+        niveau = [[100,100,500,ep],[100,300,500,ep],[100,100,50,201],[100,500,500,ep],[300,300,50,201],[550,100,50,201],[100,700,500,ep],[100,1000,500,ep],[100,1200,500,ep],[100,1400,200,ep]];
+
+        element.balle = [[550,50],[150,250],[550,450],[150,650],[550,950]];
+        balles = 0;
+        element.panneau = [[200,100,"Le mage rouge est capable de lancer des boules de feu. Celles-ci infligent des dégâts de feu."],[300,100,"Le mage rouge est très vulnérable. Tout les types d'attaque l'affecte."],[400,100,"Le mage rouge est aussi plutôt lent et ne peux pas sauter."],[500,100,"Maintenant que vous savez tout sur le mage rouge, prenez le contrôle du mage bleu ci-dessous."],[500,300,"Le mage bleu est très rapide mais il ne peut pas s'arrêter.Ceux qu'il touche subissent une attaque d'electricité. Lui aussi est très vulnérable mais est immunisé à l'electricité."],[200,300,"Le mage violet est capable de se téléporter horizontalement si l'on appuie sur espace. Attention cependant car s'il se retrouve teleporté dans une plate-forme, il se retrouvera projeté vers le bas. Comme le mage rouge il est vulnérable à toutes les attaques."],[200,700,"Le champique est lent et ne peut pas sauter. Il n'a pas de capacité spéciale."],[500,700,"Le champique a une attaque transperçante. Il est surtout utile car il résiste aux attaques de contact, de saut et de transpercement."],[500,1000,"Le champi est peu intéressant. Il est vulnérable. Il inflige une attaque de contact. Il peut s'avérer dangeureux cependant car il est imposant et plus rapide que la plupart des autres personnages."],[500,1200,"Le bipède est très lourd. Tellement lourd que quand il saute, il fait descendre la plate-forme sur laquelle il atterit. Il est invulnérable mais inoffensif."]];
+        element.choixN = [[150,1400,"select"]];
+
+        decor = [];
+
+        actor = [{"x":150,"y":100,"vx":0,"vy":0,"g":0,"sens":1,"saut":0,"moves":new MageFeu},
+                 {"x":500,"y":300,"vx":0,"vy":0,"g":0,"sens":-1,"saut":0,"moves":new MageElectro},
+                 {"x":150,"y":500,"vx":0,"vy":0,"g":0,"sens":1,"saut":0,"moves":new MageTeleportation},
+                 {"x":550,"y":700,"vx":0,"vy":0,"g":0,"sens":1,"saut":0,"moves":new Champique},
+                 {"x":550,"y":900,"vx":0,"vy":0,"g":0,"sens":-1,"saut":0,"moves":new Champi},
+                 {"x":500,"y":1100,"vx":0,"vy":0,"g":0,"sens":-1,"saut":0,"moves":new Bipede}];
+        victoire = [0,0,0,0];
+        nVictoire = 0;
+        chute = [5000,"aide2"];
+    }
+
     else if (choixNiveau == "2-1"){
         niveau = [[0,20,500,ep],[200,320,100,ep],[450,800,400,ep],[600,1400,900,ep],[550,1600,200,ep],[1350,1000,150,ep],[1700,800,150,ep],[1900,0,ep,850],[1900,849,600,ep],[1750,1250,400,ep]];
 
