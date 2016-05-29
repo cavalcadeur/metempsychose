@@ -19,6 +19,7 @@ var imgPorte = new Image();
 imgPorte.src = "images/vortex.png";
 var imgBarre = new Image();
 imgBarre.src = "images/barre.png";
+var edition = 0;
 var imgFeuX = 70;
 var imgFeuY = 35;
 var imgBalleX = 35;
@@ -940,7 +941,7 @@ function selection(choixNiveau){
     j = 0;
     element = {"feu":[],"balle":[],"panneau":[],"choixN":[]};
     if (choixNiveau == "select"){
-        niveau = [[0,20,500,ep],[200,320,1500,ep],[0,620,500,ep],[200,920,500,ep]];
+        niveau = [[0,20,500,ep],[-450,20,50,50],[200,320,1500,ep],[0,620,500,ep],[200,920,500,ep]];
 
         element.balle = [];
         balles = 0;
@@ -953,7 +954,8 @@ function selection(choixNiveau){
                  {"x":1200,"y":320,"type":new Barre,"img":new Image()},
                  {"x":-200,"y":-400,"type":new Titre,"img":new Image()},
                  {"x":0,"y":620,"type":new Barre,"img":new Image()},
-                 {"x":200,"y":920,"type":new Barre,"img":new Image()}];
+                 {"x":200,"y":920,"type":new Barre,"img":new Image()},
+                 {"x":-455,"y":-50,"type":new PanneauBas,"img":new Image()}];
 
         actor = [{"x":20,"y":0,"vx":0,"vy":0,"g":-20,"sens":1,"saut":0,"moves":new Boule}];
         victoire = [0,0,0,0];
