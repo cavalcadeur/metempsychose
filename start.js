@@ -911,6 +911,11 @@ function drawTransfert() {
     else{
         X += Math.round((actor[vj].x - actor[j].x) / 30) ;
         Y += Math.round((actor[vj].y - actor[j].y) / 30) ;
+        square.css({
+            position: "absolute",
+            left: -X + "px",
+            top: -Y + "px"
+        });
         draw();
         window.requestAnimationFrame(drawTransfert);
     }
@@ -1093,7 +1098,7 @@ else if (choixNiveau == "2-8"){
         element.panneau = [];
         element.choixN = [[1150,390,"select"]];
 
-        decor = [{"x":100,"y":120,"type":new Barre,"img":new Image()}];
+        decor = [];
 
         actor = [{"x":120,"y":10,"vx":1,"vy":0,"sens":1,"g":0,"frame":0,"saut":0,"moves":new Bipede}];
         victoire = [0,0,0,0,0,0];
