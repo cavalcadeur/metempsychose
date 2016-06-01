@@ -8,7 +8,7 @@ var j = 0;
 var keys = [];
 var metampsy = 0;
 var imgFond = new Image();
-imgFond.src = "images/fond3.png";
+imgFond.src = "images/fond2.png";
 var imgFeu = new Image();
 imgFeu.src = "images/feu.png";
 var imgBalle = new Image();
@@ -819,7 +819,10 @@ function draw() {
         ctx.fillStyle = "rgb(0,0,0)";
         ctx.fillRect(0,0,W,H);
     }
-    else ctx.drawImage(imgFond,0,0,W,H);
+    else { 
+        ctx.drawImage(imgFond,0,0,W,H);
+        //ctx.drawImage(imgFondV,-(X % 1000)/20,0,W,H);
+    }
     ctx.strokeStyle = "rgb(0,0,0)";
     element.panneau.forEach(
         function(e) {
