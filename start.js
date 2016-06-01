@@ -73,7 +73,7 @@ function Bombe() {
 }
 
 function MageFeu() {
-    this.saut = 0;
+    this.saut = 20;
     this.vit = 3;
     this.img = "F3";
     this.sx = 100;
@@ -173,7 +173,7 @@ function GraviChampi(){
     this.img = "champi";
     this.sx = 48;
     this.sy = 50;
-    this.capa = "graviteD";
+    this.capa = "graviteI";
     this.IA = "wait";
     this.att = [1];
     this.res = [];
@@ -416,6 +416,10 @@ function tombe(n){
             if (c[1] < actor[n].y - actor[n].moves.sy && c[1] + c[3] > actor[n].y - actor[n].moves.sy && c[0] < actor[n].x && c[0] + c[2] > actor[n].x){
                 if (actor[n].g < 0) actor[n].g = 0;
                 actor[n].y = c[1] + c[3] + 1 + actor[n].moves.sy;
+                if (actor[n].moves.capa == "graviteI") {
+                    actor[n].y = c[1] + c[3] + actor[n].moves.sy;
+                    actor[n].g = 0;   
+                } 
             }
             if (c[1] < actor[n].y && c[1] + c[3] > actor[n].y && c[0] < actor[n].x && c[0] + c[2] > actor[n].x){
                 if (actor[n].g > 0) actor[n].g = 0;
@@ -428,6 +432,7 @@ function tombe(n){
                                                          }}
                 }
                 actor[n].y = c[1];
+                if (actor[n].moves.capa == "graviteI") actor[n].y = c[1] + c[3] + actor[n].moves.sy;
                 sautG = 0;
                 return;
             }
@@ -714,7 +719,7 @@ function animation(){
 }
 
 function paint(t){
-    if (actor[j].y > chute[0]) selection(chute[1]);
+    if (actor[j].y > chute[0] | actor[j].y < chute[0] * -1) selection(chute[1]);
     filin += filinVit;
     if (filin > 0.2 | filin < 0.05) filinVit = filinVit * -1;
     if (1 == keys[39]) moveRight(j);
@@ -722,12 +727,7 @@ function paint(t){
 //    if (1 == keys[67]) cross();
     if ((1 == keys[96] | 1 == keys[88]) && balles > 0) transfert();
     if (1 == keys[32]) action();
-    var victorieux = 0;
-    for (var i = 0;i < actor.length;i++){
-        if ((actor[i].moves.img == "E" | actor[i].moves.img == "F2" | actor[i].moves.img == "T") && actor[i].x > victoire[0] && actor[i].x < victoire[0] + victoire[2] && actor[i].y > victoire[1] && actor[i].y < victoire[1] + victoire[3]){ 
-            victorieux += 1 ;
-            if (victorieux == nVictoire) finNiveau();
-        }        
+    for (var i = 0;i < actor.length;i++){       
         if (actor[i].moves.capa == "feu" | actor[i].moves.IA == "maintien")actor[i].moves.spam += 1;
         if (actor[i].moves.capa == "explode" && actor[i].moves.explode == 1){
             actor[i].moves.res = [1,2,3,4,5,6,7,8,9,10];
@@ -766,7 +766,7 @@ function paint(t){
             }
             if (actor[i].vx > 0) droite(i);
             else if (actor[i].vx < 0) gauche(i);
-            if (actor[i].moves.capa == "graviteD") actor[i].vx += actor[i].g;
+            if (actor[i].moves.capa == "graviteI") actor[i].vy -= actor[i].g;
             else actor[i].vy += actor[i].g;
             if (actor[i].moves.capa == "lourd") actor[i].vy += actor[i].g;
             actor[i].x += actor[i].vx;
@@ -1237,7 +1237,7 @@ else if (choixNiveau == "2-8"){
         element.balle = [[350,750],[650,750],[800,100],[1700,700],[1600,800]];
         balles = 0;
         element.panneau = [[300,800,"Impossible de passer ... Il faudrait actionner l'interrupteur là en bas.Mais vous ne pouvez pas l'atteindre.Appuyez sur zero ou x pour prendre l'esprit du monstre le plus proche."],[830,320,"Là encore le passage est impossible ... Vous savez ce qu'il reste à faire."]];
-        element.choixN = [[2300,1550,"select"]];
+        element.choixN = [[2300,1550,"1-1,2"]];
 
         decor = [];
 
@@ -1250,7 +1250,7 @@ else if (choixNiveau == "2-8"){
                  {"x":1530,"y":500,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Jumper,"img":new Image()},
                  {"x":1610,"y":500,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Jumper,"img":new Image()},
                  {"x":900,"y":700,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boxe,"img":new Image()},
-                 {"x":2300,"y":1200,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageElectro,"img":new Image()},
+                 {"x":2300,"y":1200,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Psychos,"img":new Image()},
                  {"x":870,"y":885,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Interrupteur,"img":new Image(),"plate":[404,800,450,ep]},
                  {"x":1900,"y":900,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Interrupteur,"img":new Image(),"plate":[1100,1000,850,ep]},
                  {"x":1370,"y":640,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Bombe,"img":new Image()},
@@ -1259,13 +1259,59 @@ else if (choixNiveau == "2-8"){
         nVictoire = 2;
         chute = [5000,"1-1"];
     }
+    else if (choixNiveau == "1-1,2"){
+        niveau = [[50,550,200,50],[200,550,50,150],[200,650,150,50],[300,650,50,150],[300,750,150,50],[400,750,50,150],[400,850,300,50],[650,750,50,150],[650,750,150,50],[750,700,50,100],[750,650,150,50],[850,550,50,150],[850,550,300,50],[1000,650,150,50]];
+        element.balle = [[530,810],[930,610]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[1070,550,"1-1,3"]];
+        decor = [];
+        actor = [{"x":138,"y":513,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":548,"y":1048,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new GraviChampi,"img":new Image()},
+                 {"x":902,"y":547,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageFeu,"img":new Image()},
+                ];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"1-1,2"];
+    }
+    else if (choixNiveau == "1-1,3"){
+        niveau = [[50,650,200,50],[850,450,50,450],[850,850,400,50],[350,750,500,50]];
+        element.balle = [[190,600],[560,620],[960,920],[640,800]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[1200,850,"1-1,4"]];
+        decor = [];
+        actor = [{"x":80,"y":600,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageFeu,"img":new Image()},
+                 {"x":960,"y":785,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()},
+                 {"x":378,"y":800,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new GraviChampi,"img":new Image()},
+                 {"x":496,"y":485,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Bipede,"img":new Image()},
+                ];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"1-1,3"];
+    }
+    else if (choixNiveau == "1-1,4"){
+        niveau = [[500,550,450,50],[800,800,150,50],[150,1200,600,50],[450,190,50,500],[950,190,50,450],[-50,940,50,50],[50,1090,50,0],[150,740,50,100],[-240,550,50,150],[-40,600,50,50],[-440,350,50,100],[-440,400,150,50]];
+        element.balle = [[-350,360],[600,620]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[890,550,"select"]];
+        decor = [];
+        actor = [{"x":245,"y":1103,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()},
+                 {"x":876,"y":965,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new GraviChampi,"img":new Image()},
+                 {"x":622,"y":490,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageFeu,"img":new Image()},
+                ];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"1-1,4"];
+    }
     else if (choixNiveau == "1-2"){
         niveau = [[0,2500,200,ep],[250,2500,50,50],[400,2500,50,50],[500,2500,200,50],[700,2000,50,50],[300,1300,50,50],[500,1500,50,50],[800,1300,50,50],[0,900,1000,50]];
 
         element.balle = [[550,2450]];
         balles = 0;
         element.panneau = [];
-        element.choixN = [[600,1100,"select"]];
+        element.choixN = [[600,1100,"1-2,2"]];
 
         decor = [];
 
@@ -1285,6 +1331,61 @@ else if (choixNiveau == "2-8"){
         victoire = [2000,1200,400,400,2000,1550];
         nVictoire = 2;
         chute = [5000,"1-2"];
+    }
+    else if (choixNiveau == "1-2,2"){
+        niveau = [[200,500,800,50],[200,1150,800,50],[50,1000,100,50],[1050,1000,100,50]];
+        element.balle = [];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[1550,830,"1-2,3"]];
+        decor = [];
+        actor = [{"x":603,"y":860,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Esprit,"img":new Image()},
+                 {"x":239,"y":458,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":328,"y":453,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":466,"y":448,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":581,"y":444,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":717,"y":444,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":853,"y":456,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":921,"y":449,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":248,"y":1103,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":357,"y":1103,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":566,"y":1090,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":761,"y":1102,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":908,"y":1100,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":105,"y":947,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Jumper,"img":new Image()},
+                 {"x":1100,"y":942,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Jumper,"img":new Image()},
+                ];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"1-2,2"];
+    }
+    else if (choixNiveau == "1-2,3"){
+        niveau = [[50,650,400,50],[650,450,500,50],[650,950,500,50],[1100,700,50,300],[50,1310,450,50],[450,1540,750,50],[100,1820,750,50]];
+        element.balle = [[400,600],[810,1490]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[770,1820,"select"],[1110,450,"1-2,4"]];
+        decor = [];
+        actor = [{"x":221,"y":625,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageElectro,"img":new Image()},
+                 {"x":121,"y":1289,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champi,"img":new Image()},
+                 {"x":343,"y":1260,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Jumper,"img":new Image()},
+                 {"x":212,"y":1721,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()}];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"1-2,3"];
+    }
+    else if (choixNiveau == "1-2,4"){
+        niveau = [[50,550,250,50],[150,550,50,350],[50,850,250,50],[550,550,100,50],[500,600,50,100],[650,600,50,50],[700,550,100,50],[800,600,50,100],[550,700,50,50],[600,750,50,50],[650,800,50,50],[700,750,50,50],[750,700,50,50],[50,1090,50,300],[100,1090,50,150],[150,1240,50,150],[200,1390,0,-200],[200,1090,50,300],[620,1240,0,50],[670,1240,50,150],[620,1190,150,50],[570,1140,100,50],[720,1140,100,50],[570,1090,50,50],[770,1090,50,50],[-110,970,0,0]];
+        element.balle = [[250,800]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[700,1190,"select"]];
+        decor = [];
+        actor = [{"x":185,"y":507,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()},
+                 {"x":636,"y":732,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageTeleportation,"img":new Image()}];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"1-2,4"];
     }
     else if (choixNiveau == "3-1"){
         niveau = [[0,300,100,ep],[250,300,400,ep],[650,250,400,ep],[650-ep,450,ep,ep],[450,750,600,ep],[250,650,ep,ep],[100,500,ep,ep],[1050,300,400,ep]];
