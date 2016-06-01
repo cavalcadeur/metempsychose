@@ -41,7 +41,7 @@ imgFond.onload = function (){
     console.log(imgFond);
 };
 
-var imagesList = ["bombe","bombe2","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","fantome","inter","jumper","psychos","T","carnivore","T2"];
+var imagesList = ["bombe","bombe2","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","fantome","inter","jumper","psychos","T","carnivore","T2","mageNoir"];
 var images = {};
 
 function loading(){
@@ -73,7 +73,7 @@ function Bombe() {
 }
 
 function MageFeu() {
-    this.saut = 20;
+    this.saut = 0;
     this.vit = 3;
     this.img = "F3";
     this.sx = 100;
@@ -109,6 +109,20 @@ function MageTeleportation(){
     this.IA = "wait";
     this.att = [];
     this.res = [];
+    this.anim = ["w",0];
+}
+
+function MageNoir() {
+    this.saut = 0;
+    this.vit = 5;
+    this.img = "mageNoir";
+    this.sx = 113;
+    this.sy = 155;
+    this.capa = "aveugle";
+    this.IA = "wait";
+    this.att = [10];
+    this.res = [1,2,3,4,5,6,7,8,9];
+    this.spam = 500;
     this.anim = ["w",0];
 }
 
@@ -801,7 +815,7 @@ function paint(t){
 }
 
 function draw() {
-    if (chute[1] == "aveugle" || chute[1] == "aveugle2" || chute[1] == "aveugle3"){
+    if (chute[1] == "aveugle" || chute[1] == "aveugle2" || chute[1] == "aveugle3" || actor[j].moves.capa == "aveugle"){
         ctx.fillStyle = "rgb(0,0,0)";
         ctx.fillRect(0,0,W,H);
     }
@@ -828,7 +842,7 @@ function draw() {
     );
     actor.forEach(
         function(c) {
-            if ((chute[1] == "aveugle" || chute[1] == "aveugle2" || chute[1] == "aveugle3") && c.moves.capa != "interrupteur") return;
+            if ((chute[1] == "aveugle" || chute[1] == "aveugle2" || chute[1] == "aveugle3" || actor[j].moves.capa == "aveugle") && c.moves.capa != "interrupteur") return;
             if (c.moves.capa == "instable"  | c.moves.capa == "grossissement"){
                 ctx.save();
                 ctx.translate(c.x - X,c.y - c.moves.sy * c.moves.size / 2 - Y);
@@ -849,7 +863,7 @@ function draw() {
     niveau.forEach(
         function(c) {
             ctx.fillStyle = "rgb(104,91,12)";
-            if (chute[1] == "aveugle" || chute[1] == "aveugle2" || chute[1] == "aveugle3") ctx.fillStyle = "rgb(150,150,150)";
+            if (chute[1] == "aveugle" || chute[1] == "aveugle2" || chute[1] == "aveugle3" || actor[j].moves.capa == "aveugle") ctx.fillStyle = "rgb(150,150,150)";
             ctx.fillRect(c[0] - X,c[1] - Y,c[2],c[3]);
         }
     );
@@ -1364,7 +1378,7 @@ else if (choixNiveau == "2-8"){
         element.balle = [[400,600],[810,1490]];
         balles = 0;
         element.panneau = [];
-        element.choixN = [[770,1820,"select"],[1110,450,"1-2,4"]];
+        element.choixN = [[770,1820,"1-2,5"],[1110,450,"1-2,4"]];
         decor = [];
         actor = [{"x":221,"y":625,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageElectro,"img":new Image()},
                  {"x":121,"y":1289,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champi,"img":new Image()},
@@ -1386,6 +1400,27 @@ else if (choixNiveau == "2-8"){
         victoire = [0,0,0,0,0,0];
         nVictoire = 1;
         chute = [2000,"1-2,4"];
+    }
+    else if (choixNiveau == "1-2,5"){
+        niveau = [[50,700,650,50],[50,1420,1150,50],[850,870,350,50]];
+        element.balle = [[280,660]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[90,1420,"select"]];
+        decor = [];
+        actor = [{"x":132,"y":697,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageFeu,"img":new Image()},
+                 {"x":938,"y":818,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageNoir,"img":new Image()},
+                 {"x":359,"y":1230,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Jumper,"img":new Image()},
+                 {"x":1000,"y":1322,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Jumper,"img":new Image()},
+                 {"x":507,"y":1300,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":226,"y":1339,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":810,"y":1347,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":608,"y":1361,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champi,"img":new Image()},
+                 {"x":364,"y":1365,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new BouleNeige,"img":new Image()},
+                 {"x":1159,"y":1384,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new BouleNeige,"img":new Image()}];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"1-2,5"];
     }
     else if (choixNiveau == "3-1"){
         niveau = [[0,300,100,ep],[250,300,400,ep],[650,250,400,ep],[650-ep,450,ep,ep],[450,750,600,ep],[250,650,ep,ep],[100,500,ep,ep],[1050,300,400,ep]];
