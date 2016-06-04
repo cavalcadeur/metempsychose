@@ -1,0 +1,44 @@
+*** Objectifs 0.7 ***
+- 60 niveaux en plus (0/60)
+- mage blanc
+
+
+*** version 0.6 ***
+- nouveaux persos : Mage violet, Mage noir, GraviChampi
+- Création d'un éditeur
+- Correction de bugs majeurs
+- Beaucoup plus de niveaux (10 ---> 40)
+- niveaux secrets
+- amélioration de l'aide
+- ajout de Crossed pour le contenu additionnel
+
+*** version 0.5 ***
+- Niveaux à l'aveugle
+- plus de niveaux d'adresse
+- ajout de la musique en fond
+- modification du fonctionnement des interrupteurs
+
+*** version 0.4 ***
+- ajout du monde 3
+- ajout du fantôme
+- création de l'aide
+- décors
+- animation de l'explosion de la bombe
+
+*** version 0.3 ***
+- Fumée pour la bombe
+- plus de niveau
+- nouveau fond d'écran
+- nouveaux persos : boule de neige et Champi géant
+
+*** version 0.2 ***
+- ajout de persos : plante carnivore, Mage Electro
+- Menu
+- portes
+- niveau 1-2 disponible et quelques niveaux d'adresse
+
+*** version 0.1 ***
+- Un niveau
+- 6 persos : Mage Feu, Boule, Champique, Jumper, Psychos, Bombe
+- système de metempsychose au point
+- interrupteurs
