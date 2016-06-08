@@ -83,7 +83,7 @@ function drawCinema(){
         else if (nCine == 100) {
             ctx.fillRect(0,0,W,H);
             taille = rnd(50)+100;
-            newExplosion(100 + imgCin.magePsy2.width/2 - taille/2 + "px",H/2 - imgCin.magePsy2.height/2 - taille/2 + "px",100 + imgCin.magePsy2.width/2 - taille/2 - rnd(400) + 200 + "px",H/2 - imgCin.magePsy2.height/2 - taille/2 - rnd(400) + 200 + "px", taille + "px",3,1);
+            newExplosion(100 + imgCin.magePsy2.width/2 - taille/2 + "px",H/2 - imgCin.magePsy2.height/2 - taille/2 + "px",100 + imgCin.magePsy2.width/2 - taille/2 - rnd(400) + 200 + "px",H/2 - imgCin.magePsy2.height/2 - taille/2 - rnd(200) + "px", taille + "px",3,1);
         }
         else if (nCine <= 150){
             ctx.drawImage(imgCin.magePsy,100,H/2 - imgCin.magePsy.height);
