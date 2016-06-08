@@ -13,7 +13,7 @@ function drawCinema(){
         }
         if (nCine > 100 && nCine < 400) ctx.drawImage(imgCin.note1,W/3 + 75,H - imgCin.heroine.height - imgCin.note1.height);
         if (nCine > 150 && nCine < 400) ctx.drawImage(imgCin.note2,W/3 + 105,H - imgCin.heroine.height - imgCin.note2.height - 10);
-        if (nCine > 200 && nCine < 400) ctx.drawImage(imgCin.note3,W/3 + 125,H - imgCin.heroine.height - imgCin.note3.height);
+        if (nCine > 200 && nCine < 400) ctx.drawImage(imgCin.note3,W/3 + 135,H - imgCin.heroine.height - imgCin.note3.height);
         if (nCine < 440) ctx.drawImage(imgCin.palmier1,W/3 - imgCin.palmier1.width / 2,H - imgCin.palmier1.height);
         else ctx.drawImage(imgCin.heroine2,W/3 - imgCin.palmier1.width / 2,H - imgCin.palmier1.height);
         if (nCine > 300 && nCine < 400){
@@ -54,7 +54,7 @@ function drawCinema(){
         else if (nCine >= 490 && nCine < 690){
             ctx.drawImage(imgCin.magePsy2,W/3 + 120 - imgCin.magePsy.width / 2 + (W - W/3 - 120)*(nCine-490)/200,H - imgCin.magePsy.height);
         }
-        if (nCine >= 690){
+        if (nCine >= 740){
             nCine = -1;
             cinema = "intro2";
         }
@@ -69,6 +69,30 @@ function drawCinema(){
         else if (nCine < 500) ctx.drawImage(imgCin.magePsy2,- imgCin.magePsy2.width / 2 + W/2-100 + (100)*(nCine-450)/50,H - imgCin.magePsy2.height - H/4);
 
 
+        if (nCine >= 510){
+            nCine = -1;
+            cinema = "intro3";
+        }
+    }
+    else if (cinema == "intro3"){
+        ctx.drawImage(imgCin.fond3,0,0,W,H);
+        ctx.drawImage(imgCin.barre,0,H/2);
+        ctx.drawImage(imgCin.barre,W - 500,H/3);
+        ctx.drawImage(imgCin.boule4,W - 500,H/3-imgCin.boule4.height);
+        if (nCine < 100) ctx.drawImage(imgCin.magePsy2,100,H/2 - imgCin.magePsy2.height);
+        else if (nCine == 100) {
+            ctx.fillRect(0,0,W,H);
+            taille = rnd(50)+100;
+            newExplosion(100 + imgCin.magePsy2.width/2 - taille/2 + "px",H/2 - imgCin.magePsy2.height/2 - taille/2 + "px",100 + imgCin.magePsy2.width/2 - taille/2 - rnd(400) + 200 + "px",H/2 - imgCin.magePsy2.height/2 - taille/2 - rnd(400) + 200 + "px", taille + "px",3,1);
+        }
+        else if (nCine <= 150){
+            ctx.drawImage(imgCin.magePsy,100,H/2 - imgCin.magePsy.height);
+            ctx.drawImage(imgCin.esprit,100 + (W/2-100)*(nCine-100)/50,H/2 - imgCin.esprit.height);
+        }
+        else if (nCine < 200){
+            ctx.drawImage(imgCin.magePsy,100,H/2 - imgCin.magePsy.height);
+            ctx.drawImage(imgCin.esprit,W/2,H/2 - imgCin.esprit.height);
+        }
         if (nCine >= 550){
             if (jeuCharge == 1){
                 nCine = -2;

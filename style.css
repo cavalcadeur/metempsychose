@@ -4,20 +4,24 @@ body {
 
 #alert {
     position: absolute;
-    left: 0;
+    left: 3%;
     top: 0;
-    right: 0;
+    right: 3%;
     bottom: 80%;
-    width: 100%;
     text-align: center;
     transform: translateY(-100%);
     transition: .5s transform;
-    background-color: white;
-	opacity:0.85;	
-    font-weight: bold;
+    background-color: rgb(255,255,255);
+	opacity:0.5;
+	color: rgb(0,0,0);	
+    font-weight: normal;
     font-size: 150%;
+	font-style: oblique;
     padding: 5px;
-    cursor: pointer;
+	border-bottom-left-radius: 20px;
+	border-bottom-right-radius: 20px;
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
     z-index: 2;
 }
 

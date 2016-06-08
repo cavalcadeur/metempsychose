@@ -47,7 +47,7 @@ imgFond.onload = function (){
     console.log(imgFond);
 };
 
-var imagesCinList = ["fond4","fond5","heroine","heroine2","palmier1","magePsy","magePsy2","esprit","note1","note2","note3","vortex2"];
+var imagesCinList = ["fond3","fond4","fond5","heroine","heroine2","palmier1","magePsy","magePsy2","esprit","note1","note2","note3","vortex2","barre","boule4"];
 var imagesList = ["bombe","bombe2","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","fantome","inter","jumper","psychos","T","carnivore","T2","mageNoir","esprit"];
 var images = {};
 var imgCin = {};
@@ -1840,7 +1840,7 @@ element.balle = [[330,650],[1510,-240]];
         decor = [];
         actor = [{"x":115,"y":693,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageFeu,"img":new Image()},
                  {"x":98,"y":942,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageElectro,"img":new Image()},
-                 {"x":95,"y":1187,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageNoir,"img":new Image()},
+                 {"x":155,"y":1187,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageNoir,"img":new Image()},
                  {"x":730,"y":686,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()}];
         victoire = [0,0,0,0,0,0];
         nVictoire = 1;
@@ -1860,6 +1860,20 @@ element.balle = [[330,650],[1510,-240]];
         victoire = [0,0,0,0,0,0];
         nVictoire = 1;
         chute = [2000,"-2-2"];
+    }
+    else if (choixNiveau == "-2-3"){
+        niveau = [[450,650,350,50],[600,1000,100,50],[200,900,50,50],[1100,800,50,50],[950,1200,50,50],[150,450,50,50],[1550,850,400,50],[1500,550,50,350],[1950,550,50,350],[1500,500,500,50],[350,1450,50,50],[2500,500,50,50]];
+        element.balle = [[210,850]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[1890,850,"tceles"]];
+        decor = [];
+        actor = [{"x":606,"y":603,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()},
+                 {"x":1604,"y":845,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageFeu,"img":new Image()},
+                ];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"-2-3"];
     }
     else if (choixNiveau == "reboot"){
         window.localStorage.setItem("cles","-1");
