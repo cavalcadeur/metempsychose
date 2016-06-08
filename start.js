@@ -45,7 +45,7 @@ imgFond.onload = function (){
     console.log(imgFond);
 };
 
-var imagesCinList = ["fond4","fond5","heroine","heroine2","palmier1","magePsy","magePsy2","esprit","note1","note2","note3"];
+var imagesCinList = ["fond4","fond5","heroine","heroine2","palmier1","magePsy","magePsy2","esprit","note1","note2","note3","vortex2"];
 var imagesList = ["bombe","bombe2","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","fantome","inter","jumper","psychos","T","carnivore","T2","mageNoir","esprit"];
 var images = {};
 var imgCin = {};
