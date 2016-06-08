@@ -78,7 +78,7 @@ function loading(){
 }
 
 function loadingTest(){
-    if (cles != null){
+    if (cles != null && cles != "-1"){
         nCine = -1;
         preparation();
     }
@@ -86,7 +86,7 @@ function loadingTest(){
 }
 
 function loadingTest2(){
-    if (cles != null){
+    if (cles != null && cles != "-1"){
     }
     else {
         window.localStorage.setItem("cles",0);
@@ -482,7 +482,7 @@ function tombe(n){
                 if (actor[n].saut != 0 && actor[n].g == 0){
                     actor[n].saut -= 1;
                     if (actor[n].moves.capa == "lourd") {c[1] += 10;
-                                                         for (var iii = 0; iii < 5; iii++) {
+                                                         for (var iii = 0; iii < 2; iii++) {
                                                              var taille = rnd(100) + 50;
                                                              newExplosion(actor[n].x - 50 + "px",actor[n].y - 75  + "px",actor[n].x - 100 + rnd(200) + "px",actor[n].y - 155 + rnd(200)+ "px", taille + "px",1,1);
                                                          }}
@@ -1077,8 +1077,8 @@ function selection(choixNiveau){
 
         element.balle = [[450,-20]];
         balles = 0;
-        element.panneau = [[50,20,"Bienvenue dans l'aide : pour faire disparaître les messages cliquez dessus."],[200,20,"Vous pouvez sauter avec la barre espace ou tirer des boules de feu."],[350,20,"Si vous ramassez une sphère bleue vous pourrez vous métempsychoser avec 0 ou x."],[350,420,"Maintenant que vous avez compris le principe, vous pouvez retourner au menu avec la porte de droite."],[150,420,"La porte de gauche permet d'en apprendre plus sur les différents personnages du jeu."]];
-        element.choixN = [[450,420,"select"],[50,420,"aide2"]];
+        element.panneau = [[50,20,"Bienvenue dans l'aide : pour faire disparaître les messages cliquez dessus."],[200,20,"Vous pouvez sauter avec la barre espace ou tirer des boules de feu."],[350,20,"Si vous ramassez une sphère bleue vous pourrez vous métempsychoser avec 0 ou x."],[350,420,"Maintenant que vous avez compris le principe, vous pouvez retourner au menu avec la porte de droite."],[150,420,"La porte de gauche permet d'en apprendre plus sur les différents personnages du jeu. La porte du milieu sert à réinitialiser le jeu. Après l'avoir utilisée il suffit de reloader la page."]];
+        element.choixN = [[450,420,"select"],[50,420,"aide2"],[250,420,"reboot"]];
 
         decor = [{"x":0,"y":20,"type":new Barre,"frame":0,"img":new Image()},
                  {"x":0,"y":-300,"type":new Titre2,"frame":0,"img":new Image()}];
@@ -1860,6 +1860,10 @@ element.balle = [[330,650],[1510,-240]];
         victoire = [0,0,0,0,0,0];
         nVictoire = 1;
         chute = [2000,"-2-2"];
+    }
+    else if (choixNiveau == "reboot"){
+        window.localStorage.setItem("cles","-1");
+        selection("select");
     }
     decor.forEach(
         function(c) {
