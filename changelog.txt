@@ -2,7 +2,7 @@
 - 60 niveaux en plus (3/60)
 - mage blanc
 - menu tceles [DONE]
-- cinématiques (1/3)
+- cinématiques (2/3)
 
 
 *** version 0.6 ***

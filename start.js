@@ -40,6 +40,8 @@ var secret;
 var nCine = 0;
 var cinema = "intro1";
 var jeuCharge = 0;
+var cles = window.localStorage.getItem("cles");
+console.log(cles);
 
 imgFond.onload = function (){
     console.log(imgFond);
@@ -59,7 +61,7 @@ function loading(){
             images[c].src = "images/" + c + ".png";
             images[c].onload = function (){
                 objectif -= 1;
-                if (objectif == 0) jeuCharge = 1;
+                if (objectif == 0) loadingTest();
             };
         }
     );
@@ -69,10 +71,27 @@ function loading(){
             imgCin[c].src = "images/" + c + ".png";
             imgCin[c].onload = function (){
                 objectif2 -= 1;
-                if (objectif2 == 0) animation();
+                if (objectif2 == 0) loadingTest2();
             };
         }
     );
+}
+
+function loadingTest(){
+    if (cles != null){
+        nCine = -1;
+        preparation();
+    }
+    else jeuCharge = 1;
+}
+
+function loadingTest2(){
+    if (cles != null){
+    }
+    else {
+        window.localStorage.setItem("cles",0);
+        animation();
+    }
 }
 
 function Bombe() {
@@ -904,7 +923,7 @@ function draw() {
     );
     niveau.forEach(
         function(c) {
-            ctx.fillStyle = "rgb(104,91,12)";
+            ctx.fillStyle = "rgb(83,55,85)";
             if (chute[1] == "aveugle" || chute[1] == "aveugle2" || chute[1] == "aveugle3") ctx.fillStyle = "rgb(150,150,150)";
             else if (actor[j].moves.capa == "aveugle") ctx.fillStyle = "rgb(0,0,0)";
             ctx.fillRect(c[0] - X,c[1] - Y,c[2],c[3]);
