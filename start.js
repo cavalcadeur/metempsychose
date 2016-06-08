@@ -37,23 +37,39 @@ var arti = 1000;
 var t2 = 0;
 var square;
 var secret;
+var nCine = 0;
+var cinema = "intro1";
+var jeuCharge = 0;
 
 imgFond.onload = function (){
     console.log(imgFond);
 };
 
-var imagesList = ["bombe","bombe2","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","fantome","inter","jumper","psychos","T","carnivore","T2","mageNoir"];
+var imagesCinList = ["fond4","fond5","heroine","heroine2","palmier1","magePsy","magePsy2","esprit","note1","note2","note3"];
+var imagesList = ["bombe","bombe2","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","fantome","inter","jumper","psychos","T","carnivore","T2","mageNoir","esprit"];
 var images = {};
+var imgCin = {};
 
 function loading(){
     var objectif = imagesList.length;
+    var objectif2 = imagesCinList.length;
     imagesList.forEach(
         function(c) {
             images[c] = new Image;
             images[c].src = "images/" + c + ".png";
             images[c].onload = function (){
                 objectif -= 1;
-                if (objectif == 0) preparation();
+                if (objectif == 0) jeuCharge = 1;
+            };
+        }
+    );
+    imagesCinList.forEach(
+        function(c) {
+            imgCin[c] = new Image;
+            imgCin[c].src = "images/" + c + ".png";
+            imgCin[c].onload = function (){
+                objectif2 -= 1;
+                if (objectif2 == 0) animation();
             };
         }
     );
@@ -718,23 +734,28 @@ function preparation(){
 
 function animation(){
     var f = function(t) {
-	if (Crossed.testCrossed() == 1){
-	    draw(t);
-	    window.requestAnimationFrame(Crossed.drawMenu(ctx,W,H));
-	}
-	else {
-            if (keys[77] == 1){
-		window.requestAnimationFrame(drawMap);
-            }
-            else if (trans == 0){
-		if (mort != 1){
-                    paint(t);
-                    window.requestAnimationFrame(f);
-		}
-		else window.requestAnimationFrame(drawDeath);
-            }
-            else window.requestAnimationFrame(drawTransfert);
-	}
+        if (nCine != -1){
+            drawCinema();
+        }
+        else{
+	    if (Crossed.testCrossed() == 1){
+	        draw(t);
+	        window.requestAnimationFrame(Crossed.drawMenu(ctx,W,H));
+	    }
+	    else {
+                if (keys[77] == 1){
+		    window.requestAnimationFrame(drawMap);
+                }
+                else if (trans == 0){
+		    if (mort != 1){
+                        paint(t);
+                        window.requestAnimationFrame(f);
+		    }
+		    else window.requestAnimationFrame(drawDeath);
+                }
+                else window.requestAnimationFrame(drawTransfert);
+	    }
+        }
     };
     window.requestAnimationFrame(f);
 }
@@ -744,7 +765,7 @@ function paint(t){
         if (Math.hypot(actor[j].x - secret[0],actor[j].y - secret[1]) < secret[2]){
             for (var iii = 0; iii < 5; iii++) {
                 var taille = rnd(100) + 200;
-                newExplosion(secret[0] - taille/2+ "px",secret[1] - taille/2 + "px",secret[0] - taille/2 - rnd(600) + 300 + "px",secret[1] - taille/2 - rnd(600) + 300 + "px", taille + "px",3,1);
+                newExplosion(secret[0] + "px",secret[1] - taille/2 + "px",secret[0] - taille/2 - rnd(600) + 300 + "px",secret[1] - taille/2 - rnd(600) + 300 + "px", taille + "px",3,1);
             }
             niveau.push([secret[0] - 250,secret[1],500,50]);
             element.choixN.push([secret[0],secret[1],secret[3]]);
@@ -955,6 +976,9 @@ function drawTransfert() {
             top: -Y + "px"
         });
         draw();
+        ctx.globalAlpha = 0.3;
+        ctx.drawImage(images.esprit,W/2 - images.esprit.width/2,H/2 - images.esprit.height/2);
+        ctx.globalAlpha = 1;
         window.requestAnimationFrame(drawTransfert);
     }
 }
@@ -1787,6 +1811,36 @@ function selection(choixNiveau){
         victoire = [0,0,0,0,0,0];
         nVictoire = 1;
         chute = [2000,"-1-2"];
+    }
+    else if (choixNiveau == "-2-1"){
+        niveau = [[50,700,350,50],[0,650,50,50],[400,650,50,50],[700,700,50,50],[850,900,50,50],[650,1100,50,50],[50,950,250,50],[50,1200,250,50],[1150,900,50,50],[1500,700,50,50],[1250,400,50,50],[1650,300,50,50],[1450,300,50,50],[1950,300,50,50],[1300,50,50,50],[1500,-200,50,50]];
+element.balle = [[330,650],[1510,-240]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[260,1200,"tceles"]];
+        decor = [];
+        actor = [{"x":115,"y":693,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageFeu,"img":new Image()},
+                 {"x":98,"y":942,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageElectro,"img":new Image()},
+                 {"x":95,"y":1187,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageNoir,"img":new Image()},
+                 {"x":730,"y":686,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()}];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"-2-1"];
+    }
+    else if (choixNiveau == "-2-2"){
+        niveau = [[0,550,1300,50],[850,450,150,800],[650,1200,200,50],[0,1200,0,0],[-150,1200,150,50]];
+        element.balle = [[570,510],[660,510],[750,510]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[760,1200,"tceles"]];
+        decor = [];
+        actor = [{"x":54,"y":522,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()},
+                 {"x":1147,"y":518,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Bipede,"img":new Image()},
+                 {"x":-75,"y":1195,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageFeu,"img":new Image()},
+                ];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"-2-2"];
     }
     decor.forEach(
         function(c) {

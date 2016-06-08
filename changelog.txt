@@ -1,6 +1,8 @@
 *** Objectifs 0.7 ***
-- 60 niveaux en plus (0/60)
+- 60 niveaux en plus (2/60)
 - mage blanc
+- menu tceles [DONE]
+- cinématiques
 
 
 *** version 0.6 ***
