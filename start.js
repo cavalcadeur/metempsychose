@@ -55,7 +55,7 @@ imgFond.onload = function (){
 };
 
 var imagesCinList = ["fond3","fond4","fond5","heroine","heroine2","palmier1","magePsy","magePsy2","esprit","note1","note2","note3","vortex2","barre","boule4"];
-var imagesList = ["bombe","bombe2","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","fantome","inter","jumper","psychos","T","carnivore","T2","mageNoir","esprit"];
+var imagesList = ["bombe","bombe2","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","fantome","inter","jumper","psychos","T","carnivore","T2","mageNoir","esprit","torcheA","torcheB"];
 var images = {};
 var imgCin = {};
 
@@ -164,7 +164,7 @@ function MageNoir() {
     this.sx = 113;
     this.sy = 155;
     this.capa = "aveugle";
-    this.IA = "wait";
+    this.IA = "allerRetour";
     this.att = [10];
     this.res = [1,2,3,4,5,6,7,8,9];
     this.spam = 500;
@@ -301,6 +301,34 @@ function Esprit() {
     this.IA = "maintien";
     this.att = [];
     this.res = [];
+    this.spam = 80;
+    this.anim = ["f",3,0,100];
+}
+
+function TorcheA() {
+    this.saut = 0;
+    this.vit = 0;
+    this.img = "torcheA";
+    this.sx = 100;
+    this.sy = 100;
+    this.capa = "torche";
+    this.IA = "wait";
+    this.att = [3];
+    this.res = [3];
+    this.spam = 80;
+    this.anim = ["f",3,0,100];
+}
+
+function TorcheB() {
+    this.saut = 0;
+    this.vit = 20;
+    this.img = "torcheB";
+    this.sx = 100;
+    this.sy = 100;
+    this.capa = "torcheVol";
+    this.IA = "vol";
+    this.att = [3];
+    this.res = [3];
     this.spam = 80;
     this.anim = ["f",3,0,100];
 }
@@ -530,6 +558,11 @@ function droite(n){
     niveau.forEach(
         function(c) {
             if (c[1] - 1 < actor[n].y - actor[n].moves.sy / 2 && c[1] + c[3] > actor[n].y - actor[n].moves.sy / 2 && c[0] < actor[n].x + actor[n].moves.sx / 2 && c[0] + c[2] > actor[n].x + actor[n].moves.sx / 2){
+                if (actor[n].moves.capa == "torcheVol"){
+                    actor[n].moves = new TorcheA;
+                    actor[n].img = images[actor[j].moves.img];
+                    actor[n].g = 0;
+                }
                 actor[n].x = c[0] - 1 - actor[n].moves.sx / 2;
                 if (actor[n].moves.capa == "courseLongue") actor[n].vx = 0;
                 if (actor[n].moves.capa == "instable") actor[n].moves.inertie = 0;
@@ -543,6 +576,12 @@ function gauche(n){
     niveau.forEach(
         function(c) {
             if  (c[1] - 1 < actor[n].y - actor[n].moves.sy / 2 && c[1] + c[3] > actor[n].y - actor[n].moves.sy / 2 && c[0] < actor[n].x - actor[n].moves.sx / 2 && c[0] + c[2] > actor[n].x - actor[n].moves.sx / 2){
+                if (actor[n].moves.capa == "torcheVol"){
+                    actor[n].moves = new TorcheA;
+                    actor[n].img = images[actor[j].moves.img];
+                    actor[n].vx = 0;
+                    actor[n].g = 0;
+                }
                 actor[n].x = c[0] + c[2] + 1 + actor[n].moves.sx / 2;
                 if (actor[n].moves.capa == "courseLongue") actor[n].vx = 0;
                 if (actor[n].moves.capa == "instable") actor[n].moves.inertie = 0;
@@ -557,7 +596,7 @@ function gauche(n){
 function moveRight(n){
     actor[n].sens = 1;
     actor[n].vx += actor[n].moves.vit;
-    if (actor[n].moves.capa == "courseLongue") actor[n].vx = actor[n].moves.vit;
+    if (actor[n].moves.capa == "courseLongue" | actor[n].moves.capa == "torcheVol") actor[n].vx = actor[n].moves.vit;
     if (actor[n].moves.capa == "instable"  | actor[n].moves.capa == "grossissement"){
         actor[n].moves.inertie += 0.1;
         actor[n].moves.r += actor[n].moves.vit / actor[n].moves.sy;
@@ -570,7 +609,7 @@ function moveRight(n){
 function moveLeft(n){
     actor[n].sens = -1;
     actor[n].vx -= actor[n].moves.vit;
-    if (actor[n].moves.capa == "courseLongue") actor[n].vx = -1 * actor[n].moves.vit;
+    if (actor[n].moves.capa == "courseLongue" | actor[n].moves.capa == "torcheVol") actor[n].vx = -1 * actor[n].moves.vit;
     if (actor[n].moves.capa == "instable"  | actor[n].moves.capa == "grossissement"){
         actor[n].moves.inertie -= 0.1;
         actor[n].moves.r -= actor[n].moves.vit / actor[n].moves.sy;
@@ -686,6 +725,11 @@ function action(){
             }
         }
     );
+    if (actor[j].moves.capa == "torche"){
+        actor[j].moves = new TorcheB;
+        actor[j].img = images[actor[j].moves.img];
+        actor[j].vx = actor[j].moves.vit * actor[j].sens;
+    }
     if (actor[j].moves.capa == "immateriel")  actor[j].g = -1 * actor[j].moves.saut;
     if (actor[j].moves.capa != "feu" && actor[j].g == 1 && actor[j].saut == 0){
         actor[j].g = -1 * actor[j].moves.saut;
@@ -848,12 +892,14 @@ function paint(t){
             }
             if (actor[i].vx > 0) droite(i);
             else if (actor[i].vx < 0) gauche(i);
-            if (actor[i].moves.capa == "graviteI") actor[i].vy -= actor[i].g;
-            else actor[i].vy += actor[i].g;
+            if (actor[i].moves.capa != "torcheVol"){
+                if (actor[i].moves.capa == "graviteI") actor[i].vy -= actor[i].g;
+                else actor[i].vy += actor[i].g;
+            }
             if (actor[i].moves.capa == "lourd") actor[i].vy += actor[i].g;
             actor[i].x += actor[i].vx;
             actor[i].y += actor[i].vy;
-            if (actor[i].moves.capa != "courseLongue"){
+            if (actor[i].moves.capa != "courseLongue" && actor[i].moves.capa != "torcheVol"){
                 actor[i].vx = 0;
             }
             actor[i].vy = 0;
@@ -1082,7 +1128,7 @@ function selection(choixNiveau){
 
         element.balle = [];
         balles = 0;
-        element.panneau = [[130,20,"Monde -1 : difficile"],[640,320,"Monde -2 : adresse"],[130,620,"Monde -3 : moyennement dur"],[640,920,"Monde -4 : a l'aveugle"]];
+        element.panneau = [[130,20,"Monde -1 : difficile"],[640,320,"Monde -2 : normal"],[130,620,"Monde -3 : extremement difficile (risque potentiel de suicide)"],[640,920,"Monde -4 : dfjqgbdfjqisbvgkjis"]];
         element.choixN = [[300,20,"-1-1"],[450,20,"-1-2"],[450,320,"-2-1"],[300,320,"-2-2"],[900,320,"-2-3"],[1050,320,"-2-4"],[750,320,"-2-5"],[1200,320,"-2-6"],[1350,320,"-2-7"],[1500,320,"-2-8"],[1650,320,"-2-9"],[300,620,"-3-1"],[450,620,"-3-2"],[450,920,"-aveugle"],[300,920,"-aveugle2"],[600,920,"-aveugle3"]];
 
         decor = [{"x":-200,"y":-400,"type":new Titre3,"img":new Image()},
@@ -1822,7 +1868,7 @@ function selection(choixNiveau){
         element.balle = [[340,500],[580,1060]];
         balles = 0;
         element.panneau = [];
-        element.choixN = [[1160,550,"tceles"]];
+        element.choixN = [[1160,550,"-1-1,2"]];
         decor = [];
         actor = [{"x":644,"y":542,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageFeu,"img":new Image()},
                  {"x":148,"y":736,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageNoir,"img":new Image()},
@@ -1925,6 +1971,107 @@ function selection(choixNiveau){
         victoire = [0,0,0,0,0,0];
         nVictoire = 1;
         chute = [2000,"-2-5"];
+    }
+    else if (choixNiveau == "-2-6"){
+        niveau = [[0,600,250,50],[500,600,50,50],[350,900,50,50],[300,900,50,50],[250,900,50,50],[50,1050,50,50],[550,1100,50,50],[750,950,50,50],[900,800,50,50],[750,700,50,50],[950,1150,50,50],[1150,950,50,50],[1350,1100,50,50],[1150,600,300,50]];
+        element.balle = [[130,560],[200,560],[170,510],[130,470],[210,470],[60,1000],[910,740],[750,900],[560,1040],[960,1100],[1160,910],[1360,1050],[510,670]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[1400,600,"tceles"]];
+        decor = [];
+        element.cle = [160,670];
+        actor = [{"x":58,"y":579,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()},
+                 {"x":332,"y":1076,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new GraviChampi,"img":new Image()},
+                 {"x":528,"y":578,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Jumper,"img":new Image()},
+                 {"x":1171,"y":595,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageNoir,"img":new Image()}];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"-2-6"];
+    }
+    else if (choixNiveau == "-2-7"){
+        niveau = [[0,550,400,50],[400,850,250,50],[600,900,50,100],[650,950,200,50],[800,1000,50,200],[600,1200,250,50],[50,1150,250,50],[800,550,50,50],[600,550,50,50],[450,550,50,50],[1100,550,50,50],[1200,550,250,50],[1450,350,50,50]];
+        element.balle = [[900,1110],[500,1110]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[1410,550,"tceles"]];
+        decor = [];
+        element.cle = [100,1000];
+        actor = [{"x":519,"y":845,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":684,"y":1313,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new GraviChampi,"img":new Image()},
+                 {"x":223,"y":513,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()}];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"-2-7"];
+    }
+    else if (choixNiveau == "-2-8"){
+        niveau = [[400,500,450,50],[400,1050,400,50],[800,1000,150,50],[150,1350,150,50],[100,1250,50,50],[300,1250,50,50],[100,1150,50,50],[300,1150,50,50],[100,1000,50,50],[300,1000,50,50],[100,800,50,50],[350,800,0,50],[300,800,50,50],[100,650,250,50],[850,350,50,200],[850,300,50,50]];
+        element.balle = [[110,940],[310,950],[570,560]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[780,500,"tceles"]];
+        decor = [];
+        element.cle = [850,970];
+        actor = [{"x":230,"y":1270,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()},
+                 {"x":594,"y":980,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Bipede,"img":new Image()},
+                 {"x":661,"y":1190,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new GraviChampi,"img":new Image()},
+                 {"x":460,"y":487,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageElectro,"img":new Image()},
+                ];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"-2-8"];
+    }
+    else if (choixNiveau == "-2-9"){
+        niveau = [[0,1100,300,50],[250,750,400,50],[600,1100,350,50],[900,750,350,50]];
+        element.balle = [[230,1050],[440,820],[590,710],[1060,810]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[1210,750,"tceles"]];
+        decor = [];
+        element.cle = [-1000,-1000];
+        actor = [{"x":26,"y":1080,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":368,"y":743,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":977,"y":738,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":141,"y":1171,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new GraviChampi,"img":new Image()},
+                 {"x":769,"y":1187,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new GraviChampi,"img":new Image()},
+                ];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"-2-9"];
+    }
+    else if (choixNiveau == "-1-1,2"){
+        niveau = [[0,850,300,50],[200,500,300,50],[850,850,350,50],[1200,650,0,250],[1200,700,50,200],[1200,650,50,50],[-1500,600,50,350],[-1450,850,750,50]];
+        element.balle = [[360,560]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[1150,850,"tceles"]];
+        decor = [];
+        element.cle = [-1430,780];
+        actor = [{"x":149,"y":967,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new GraviChampi,"img":new Image()},
+                 {"x":144,"y":840,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new TorcheA,"img":new Image()},
+                ];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"-1-1,2"];
+    }
+    else if (choixNiveau == "-3-1"){
+        niveau = [[0,450,50,50],[200,700,50,50],[0,950,50,50],[200,1200,50,50],[0,1500,400,50],[0,2100,150,50],[300,2100,550,50],[350,1750,800,50],[1050,2100,300,50],[1500,2100,150,50],[1650,1950,50,200],[1650,1900,50,50],[900,1500,50,50],[1100,1350,50,50],[900,1200,50,50],[1100,1000,50,50],[1250,1150,450,50],[1250,1200,50,250],[1300,1400,350,50],[1650,1200,50,250],[1800,1300,350,50],[1900,1150,100,0],[1900,1050,150,50]];
+        element.balle = [[730,2060],[150,1560],[10,340],[1600,2060]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[1460,1400,"tceles"]];
+        decor = [];
+        element.cle = [-1000,-1000];
+        actor = [{"x":407,"y":2091,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageFeu,"img":new Image()},
+                 {"x":189,"y":1498,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()},
+                 {"x":83,"y":2084,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new TorcheA,"img":new Image()},
+                 {"x":1203,"y":2095,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Psychos,"img":new Image()},
+                 {"x":1214,"y":2235,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new GraviChampi,"img":new Image()},
+                 {"x":770,"y":1738,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champique,"img":new Image()},
+                 {"x":1441,"y":1097,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Champi,"img":new Image()},
+                 {"x":1979,"y":1296,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageTeleportation,"img":new Image()}];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [3000,"-3-1"];
     }
     else if (choixNiveau == "reboot"){
         window.localStorage.setItem("cles","-1");
