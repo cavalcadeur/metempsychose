@@ -55,7 +55,7 @@ imgFond.onload = function (){
 };
 
 var imagesCinList = ["fond3","fond4","fond5","heroine","heroine2","palmier1","magePsy","magePsy2","esprit","note1","note2","note3","vortex2","barre","boule4"];
-var imagesList = ["bombe","bombe2","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","fantome","inter","jumper","psychos","T","carnivore","T2","mageNoir","esprit","torcheA","torcheB"];
+var imagesList = ["bombe","bombe2","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","champiVortex","champiNinja","fantome","inter","jumper","psychos","T","carnivore","T2","mageNoir","esprit","torcheA","torcheB"];
 var images = {};
 var imgCin = {};
 
@@ -108,9 +108,12 @@ function Bombe() {
     this.vit = 3;
     this.img = "bombe";
     this.sx = 70;
-    this.sy = 80;
+    this.sy = 70;
     this.capa = "explode";
     this.IA = "allerRetour";
+    this.r = 0;
+    this.size = 1;
+    this.inertie = 0;
     this.att = [];
     this.res = [3];
     this.explode = 0;
@@ -234,6 +237,32 @@ function GraviChampi(){
     this.sy = 50;
     this.capa = "graviteI";
     this.IA = "wait";
+    this.att = [1];
+    this.res = [];
+    this.anim = ["w",6,0,100];
+}
+
+function ChampiVortex(){
+    this.saut = 0;
+    this.vit = 3;
+    this.img = "champiVortex";
+    this.sx = 70;
+    this.sy = 60;
+    this.capa = "vortex";
+    this.IA = "allerRetour";
+    this.att = [1];
+    this.res = [];
+    this.anim = ["w",6,0,100];
+}
+
+function ChampiNinja(){
+    this.saut = 21;
+    this.vit = 7;
+    this.img = "champiNinja";
+    this.sx = 70;
+    this.sy = 60;
+    this.capa = "doubleJump";
+    this.IA = "allerRetour";
     this.att = [1];
     this.res = [];
     this.anim = ["w",6,0,100];
@@ -468,6 +497,12 @@ function Titre3(){
     this.sy = 20;
 }
 
+function Titre4(){
+    this.img = "Titre4";
+    this.sx = 0;
+    this.sy = 20;
+}
+
 
 var element = {"feu":[],"balle":[],"panneau":[],"choixN":[]};
 
@@ -501,12 +536,13 @@ function resize(){
 }
 
 function tombe(n){
+    var actorBas = actor[n].y - actor[n].moves.sy;
     if (actor[n].moves.capa == "interrupteur")return false;
     if (actor[n].moves.capa == "immateriel")return true;
     var sautG = 0.2;
     niveau.forEach(
         function(c) {
-            if (c[1] < actor[n].y - actor[n].moves.sy && c[1] + c[3] > actor[n].y - actor[n].moves.sy && c[0] < actor[n].x && c[0] + c[2] > actor[n].x){
+            if (c[1] < actorBas && c[1] + c[3] > actorBas && c[0] < actor[n].x && c[0] + c[2] > actor[n].x){
                 if (actor[n].g < 0) actor[n].g = 0;
                 actor[n].y = c[1] + c[3] + 1 + actor[n].moves.sy;
                 if (actor[n].moves.capa == "graviteI") {
@@ -518,6 +554,7 @@ function tombe(n){
                 if (actor[n].g > 0) actor[n].g = 0;
                 if (actor[n].saut != 0 && actor[n].g == 0){
                     actor[n].saut -= 1;
+                    if (actor[n].moves.capa == "doubleJump2")actor[n].moves.capa = "doubleJump";
                     if (actor[n].moves.capa == "lourd") {c[1] += 10;
                                                          for (var iii = 0; iii < 2; iii++) {
                                                              var taille = rnd(100) + 50;
@@ -554,10 +591,12 @@ function test(x,y){
 }
 
 function droite(n){
+    var actorBas = actor[n].y - actor[n].moves.sy / 2;
+    var actorDroite = actor[n].x + actor[n].moves.sx / 2;
     if (actor[n].moves.capa == "immateriel")return;
     niveau.forEach(
         function(c) {
-            if (c[1] - 1 < actor[n].y - actor[n].moves.sy / 2 && c[1] + c[3] > actor[n].y - actor[n].moves.sy / 2 && c[0] < actor[n].x + actor[n].moves.sx / 2 && c[0] + c[2] > actor[n].x + actor[n].moves.sx / 2){
+            if (c[1] - 1 < actorBas && c[1] + c[3] > actorBas && c[0] < actorDroite && c[0] + c[2] > actorDroite){
                 if (actor[n].moves.capa == "torcheVol"){
                     actor[n].moves = new TorcheA;
                     actor[n].img = images[actor[j].moves.img];
@@ -572,10 +611,12 @@ function droite(n){
 }
 
 function gauche(n){
+    var actorBas = actor[n].y - actor[n].moves.sy / 2;
+    var actorGauche = actor[n].x - actor[n].moves.sx / 2;
     if (actor[n].moves.capa == "immateriel")return;
     niveau.forEach(
         function(c) {
-            if  (c[1] - 1 < actor[n].y - actor[n].moves.sy / 2 && c[1] + c[3] > actor[n].y - actor[n].moves.sy / 2 && c[0] < actor[n].x - actor[n].moves.sx / 2 && c[0] + c[2] > actor[n].x - actor[n].moves.sx / 2){
+            if  (c[1] - 1 < actorBas && c[1] + c[3] > actorBas && c[0] < actorGauche && c[0] + c[2] > actorGauche){
                 if (actor[n].moves.capa == "torcheVol"){
                     actor[n].moves = new TorcheA;
                     actor[n].img = images[actor[j].moves.img];
@@ -597,7 +638,7 @@ function moveRight(n){
     actor[n].sens = 1;
     actor[n].vx += actor[n].moves.vit;
     if (actor[n].moves.capa == "courseLongue" | actor[n].moves.capa == "torcheVol") actor[n].vx = actor[n].moves.vit;
-    if (actor[n].moves.capa == "instable"  | actor[n].moves.capa == "grossissement"){
+    if (actor[n].moves.capa == "instable"  || actor[n].moves.capa == "grossissement" || actor[n].moves.capa == "explode"){
         actor[n].moves.inertie += 0.1;
         actor[n].moves.r += actor[n].moves.vit / actor[n].moves.sy;
         if (actor[n].moves.capa == "grossissement" && actor[n].moves.size < 20) actor[n].moves.size += actor[n].moves.vit/1000;
@@ -610,7 +651,7 @@ function moveLeft(n){
     actor[n].sens = -1;
     actor[n].vx -= actor[n].moves.vit;
     if (actor[n].moves.capa == "courseLongue" | actor[n].moves.capa == "torcheVol") actor[n].vx = -1 * actor[n].moves.vit;
-    if (actor[n].moves.capa == "instable"  | actor[n].moves.capa == "grossissement"){
+    if (actor[n].moves.capa == "instable"  || actor[n].moves.capa == "grossissement" || actor[n].moves.capa == "explode"){
         actor[n].moves.inertie -= 0.1;
         actor[n].moves.r -= actor[n].moves.vit / actor[n].moves.sy;
         if (actor[n].moves.capa == "grossissement" && actor[n].moves.size < 20) actor[n].moves.size += actor[n].moves.vit/1000;
@@ -637,7 +678,7 @@ function IA(i){
     else if (actor[i].moves.IA == "allerRetour") {
         if (test(actor[i].x + actor[i].sens * actor[i].moves.vit,actor[i].y) == true){
             actor[i].vx = actor[i].sens * actor[i].moves.vit;
-            if (actor[i].moves.capa == "instable"  | actor[i].moves.capa == "grossissement"){
+            if (actor[i].moves.capa == "instable"  | actor[i].moves.capa == "grossissement" | actor[i].moves.capa == "explode"){
                 actor[i].moves.inertie += 0.1 * actor[i].sens;
                 actor[i].moves.r += (actor[i].moves.vit / actor[i].moves.sy) * actor[i].sens;
                 if (actor[i].moves.capa == "grossissement" && actor[i].moves.size < 20) actor[i].moves.size += actor[i].moves.vit/1000;
@@ -730,10 +771,26 @@ function action(){
         actor[j].img = images[actor[j].moves.img];
         actor[j].vx = actor[j].moves.vit * actor[j].sens;
     }
+    if (actor[j].moves.capa == "vortex"){
+        var ox = actor[j].x;
+        var oy = actor[j].y - actor[j].moves.sy / 2 - 17;
+        element.balle.forEach(
+            function(e){
+                e[0] += ((ox - e[0])/Math.abs(ox - e[0])) * 10;
+                e[1] += ((oy - e[1])/Math.abs(oy - e[1])) * 10;
+            }
+        );
+
+    }
     if (actor[j].moves.capa == "immateriel")  actor[j].g = -1 * actor[j].moves.saut;
     if (actor[j].moves.capa != "feu" && actor[j].g == 1 && actor[j].saut == 0){
         actor[j].g = -1 * actor[j].moves.saut;
         actor[j].saut = 2;
+    }
+    else if (actor[j].moves.capa == "doubleJump" && actor[j].g > -2){
+        actor[j].g = -1 * actor[j].moves.saut;
+        actor[j].saut = 2;
+        actor[j].moves.capa = "doubleJump2";
     }
     if (actor[j].moves.capa == "feu" && actor[j].moves.spam > 100){
         actor[j].moves.spam = 0;
@@ -863,6 +920,7 @@ function paint(t){
         else if (actor[i].moves.capa == "explode" && actor[i].moves.explode > 0 && t - actor[i].moves.explode > 2000){
             actor[i].moves.capa = "explosive";
             actor[i].moves.att.push(10);
+            actor[i].moves.r = 0;
             actor[i].img  = images[actor[i].moves.img + "3"];
             for (var iii = 0; iii < 5; iii++) {
                 var taille = rnd(100) + 50;
@@ -948,24 +1006,25 @@ function draw() {
             ctx.drawImage(imgPorte,e[0] - X - 30,e[1] - 70 - Y);
         }
     );
+    var actorBas = actor[j].y - actor[j].moves.sy;
     element.balle.forEach(
         function(e) {
             ctx.drawImage(imgBalle,e[0] - X,e[1] - Y);
-            if (actor[j].y - actor[j].moves.sy < e[1] + imgBalleY / 2 && actor[j].y > e[1] + imgBalleY / 2 && actor[j].x - actor[j].moves.sx / 2 < e[0] + imgBalleX / 2 && actor[j].x + actor[j].moves.sx / 2 > e[0] + imgFeuX / 2){
+            if (actorBas < e[1] + imgBalleY / 2 && actor[j].y > e[1] + imgBalleY / 2 && actor[j].x - actor[j].moves.sx / 2 < e[0] + imgBalleX / 2 && actor[j].x + actor[j].moves.sx / 2 > e[0] + imgFeuX / 2){
                 element.balle.splice(element.balle.indexOf(e),1);
                 balles += 1;
             }
         }
     );
     ctx.drawImage(imgCle,element.cle[0] - X,element.cle[1] - Y);
-    if (actor[j].y - actor[j].moves.sy < element.cle[1] + imgBalleY / 2 && actor[j].y > element.cle[1] + imgBalleY / 2 && actor[j].x - actor[j].moves.sx / 2 < element.cle[0] + imgBalleX / 2 && actor[j].x + actor[j].moves.sx / 2 > element.cle[0] + imgFeuX / 2){
+    if (actorBas < element.cle[1] + imgBalleY / 2 && actor[j].y > element.cle[1] + imgBalleY / 2 && actor[j].x - actor[j].moves.sx / 2 < element.cle[0] + imgBalleX / 2 && actor[j].x + actor[j].moves.sx / 2 > element.cle[0] + imgFeuX / 2){
         element.cle = [-1000,-1000];
         potentielCle = 1;
     }
     actor.forEach(
         function(c) {
             if ((chute[1] == "aveugle" || chute[1] == "aveugle2" || chute[1] == "aveugle3" || actor[j].moves.capa == "aveugle") && c.moves.capa != "interrupteur") return;
-            if (c.moves.capa == "instable"  | c.moves.capa == "grossissement"){
+            if (c.moves.capa == "instable"  || c.moves.capa == "grossissement" || c.moves.capa == "explode"){
                 ctx.save();
                 ctx.translate(c.x - X,c.y - c.moves.sy * c.moves.size / 2 - Y);
                 ctx.scale(c.moves.size,c.moves.size);
@@ -1116,6 +1175,7 @@ function selection(choixNiveau){
         element.choixN = [[300,20,"1-1"],[450,20,"1-2"],[450,320,"2-1"],[300,320,"2-2"],[900,320,"2-3"],[1050,320,"2-4"],[750,320,"2-5"],[1200,320,"2-6"],[1350,320,"2-7"],[1500,320,"2-8"],[1650,320,"2-9"],[300,620,"3-1"],[450,620,"3-2"],[450,920,"aveugle"],[300,920,"aveugle2"],[600,920,"aveugle3"]];
 
         decor = [{"x":-200,"y":-400,"type":new Titre,"img":new Image()},
+                 {"x":-655,"y":-200,"type":new Titre4,"img":new Image()},
                  {"x":-455,"y":-50,"type":new PanneauBas,"img":new Image()}];
 
         actor = [{"x":20,"y":0,"vx":0,"vy":0,"g":-20,"sens":1,"saut":0,"moves":new Boule}];
@@ -1144,7 +1204,7 @@ function selection(choixNiveau){
 
         element.balle = [[450,-20]];
         balles = 0;
-        element.panneau = [[50,20,"Bienvenue dans l'aide : pour faire disparaître les messages cliquez dessus."],[200,20,"Vous pouvez sauter avec la barre espace ou tirer des boules de feu."],[350,20,"Si vous ramassez une sphère bleue vous pourrez vous métempsychoser avec 0 ou x."],[350,420,"Maintenant que vous avez compris le principe, vous pouvez retourner au menu avec la porte de droite."],[150,420,"La porte de gauche permet d'en apprendre plus sur les différents personnages du jeu. La porte du milieu sert à réinitialiser le jeu. Après l'avoir utilisée il suffit de reloader la page."]];
+        element.panneau = [[50,20,"Bienvenue dans l'aide : pour faire disparaître les messages cliquez dessus."],[200,20,"La barre espace sert à effectuer l'action correspondant à la créature que vous controlez. La boule peut sauter par exemple."],[350,20,"Si vous ramassez une sphère bleue vous pourrez vous métempsychoser avec 0 ou x. La metempsychose vous permet de prendre le contrôle de la créature la plus proche, signalée par le trait blanc."],[350,420,"Maintenant que vous avez compris le principe, vous pouvez retourner au menu avec la porte de droite."],[150,420,"La porte de gauche permet d'en apprendre plus sur les différents personnages du jeu. La porte du milieu sert à réinitialiser le jeu. Après l'avoir utilisée il suffit de reloader la page."]];
         element.choixN = [[450,420,"select"],[50,420,"aide2"],[250,420,"reboot"]];
 
         decor = [{"x":0,"y":20,"type":new Barre,"frame":0,"img":new Image()},
@@ -1157,24 +1217,42 @@ function selection(choixNiveau){
     }
 
     else if (choixNiveau == "aide2"){
-        niveau = [[100,100,50,201],[300,300,50,201],[550,100,50,201],[100,1400,200,ep],[100,100,500,ep],[100,300,500,ep],[100,500,500,ep],[100,700,500,ep],[100,1000,500,ep],[100,1200,500,ep]];
+        niveau = [[0,-200,600,50],[100,100,50,201],[300,300,50,201],[550,100,50,201],[100,1400,200,ep],[100,100,500,ep],[100,300,500,ep],[100,500,500,ep],[100,700,500,ep],[100,1000,500,ep],[100,1200,500,ep]];
 
-        element.balle = [[550,50],[150,250],[550,450],[150,650],[550,950]];
+        element.balle = [[550,-250],[550,50],[150,250],[550,450],[150,650],[550,950]];
         balles = 0;
-        element.panneau = [[200,100,"Le mage rouge est capable de lancer des boules de feu. Celles-ci infligent des dégâts de feu."],[300,100,"Le mage rouge est très vulnérable. Tout les types d'attaque l'affecte."],[400,100,"Le mage rouge est aussi plutôt lent et ne peux pas sauter."],[500,100,"Maintenant que vous savez tout sur le mage rouge, prenez le contrôle du mage bleu ci-dessous."],[500,300,"Le mage bleu est très rapide mais il ne peut pas s'arrêter.Ceux qu'il touche subissent une attaque d'electricité. Lui aussi est très vulnérable mais est immunisé à l'electricité."],[200,300,"Le mage violet est capable de se téléporter horizontalement si l'on appuie sur espace. Attention cependant car s'il se retrouve teleporté dans une plate-forme, il se retrouvera projeté vers le bas. Comme le mage rouge il est vulnérable à toutes les attaques."],[200,700,"Le champique est lent et ne peut pas sauter. Il n'a pas de capacité spéciale."],[500,700,"Le champique a une attaque transperçante. Il est surtout utile car il résiste aux attaques de contact, de saut et de transpercement."],[500,1000,"Le champi est peu intéressant. Il est vulnérable. Il inflige une attaque de contact. Il peut s'avérer dangeureux cependant car il est imposant et plus rapide que la plupart des autres personnages."],[500,1200,"Le bipède est très lourd. Tellement lourd que quand il saute, il fait descendre la plate-forme sur laquelle il atterit. Il est invulnérable mais inoffensif."]];
-        element.choixN = [[150,1400,"select"]];
+        element.panneau = [[200,-200,"Pour commencer voici un petit récapitulatif des touches : les flèches permettent de se déplacer, la barre espace d'effectuer l'action de la créature que l'on possède, x et 0 servent à la metempsychose et m permet d'afficher la carte du niveau. Si vous avez joué à d'autres de mes jeux, prenez la porte à gauche pour apprendre à utiliser le menu Crossed."],[300,-200,"Chaque créature que vous croiserez présentera des caractéristiques uniques. Comportement,vitesse,saut,résistance ou capacités spéciales sont autant d'attributs que vous allez apprendre à connaître dans ce niveau."],[400,-200,"Dans ce jeu, quand vous entrez en contact avec une autre créature, vous vous faites du mal mutuellement. Il y a sept type d'attaque infligeable : le contact simple, l'écrasement, le feu, le transpercement, le froid, le psychique et l'electricite"],[500,-200,"Il existe aussi une attaque d'explosion auxquelle personne ne peut resister."],[300,100,"Le mage rouge est sensible à toutes les attaques, il peut lancer des boules de feu qui infligent des dégâts de feu."],[400,100,"Le mage rouge est aussi plutôt lent et ne peux pas sauter."],[500,100,"Maintenant que vous savez tout sur le mage rouge, prenez le contrôle du mage bleu ci-dessous."],[500,300,"Le mage bleu est très rapide mais il ne peut pas s'arrêter.Ceux qu'il touche subissent une attaque d'electricité. Lui aussi est très vulnérable mais est immunisé à l'electricité."],[200,300,"Le mage violet est capable de se téléporter horizontalement si l'on appuie sur espace. Attention cependant car s'il se retrouve teleporté dans une plate-forme, il se retrouvera projeté vers le bas. Comme le mage rouge il est vulnérable à toutes les attaques."],[200,700,"Le champique est lent et ne peut pas sauter. Il n'a pas de capacité spéciale."],[500,700,"Le champique a une attaque transperçante. Il est surtout utile car il résiste aux attaques de contact, de saut et de transpercement."],[500,1000,"Le champi est peu intéressant. Il est vulnérable. Il inflige une attaque de contact. Il peut s'avérer dangeureux cependant car il est imposant et plus rapide que la plupart des autres personnages."],[500,1200,"Le bipède est très lourd. Tellement lourd que quand il saute, il fait descendre la plate-forme sur laquelle il atterit. Il est invulnérable mais inoffensif."]];
+        element.choixN = [[150,1400,"select"],[50,-200,"aide3"]];
 
         decor = [];
 
-        actor = [{"x":150,"y":100,"vx":0,"vy":0,"g":0,"sens":1,"saut":0,"moves":new MageFeu},
-                 {"x":500,"y":300,"vx":0,"vy":0,"g":0,"sens":-1,"saut":0,"moves":new MageElectro},
-                 {"x":150,"y":500,"vx":0,"vy":0,"g":0,"sens":1,"saut":0,"moves":new MageTeleportation},
-                 {"x":550,"y":700,"vx":0,"vy":0,"g":0,"sens":1,"saut":0,"moves":new Champique},
-                 {"x":550,"y":900,"vx":0,"vy":0,"g":0,"sens":-1,"saut":0,"moves":new Champi},
-                 {"x":500,"y":1100,"vx":0,"vy":0,"g":0,"sens":-1,"saut":0,"moves":new Bipede}];
+        actor = [
+            {"x":150,"y":-250,"vx":0,"vy":0,"g":0,"sens":1,"saut":0,"moves":new Boule},
+            {"x":150,"y":100,"vx":0,"vy":0,"g":0,"sens":1,"saut":0,"moves":new MageFeu},
+            {"x":500,"y":300,"vx":0,"vy":0,"g":0,"sens":-1,"saut":0,"moves":new MageElectro},
+            {"x":150,"y":500,"vx":0,"vy":0,"g":0,"sens":1,"saut":0,"moves":new MageTeleportation},
+            {"x":550,"y":700,"vx":0,"vy":0,"g":0,"sens":1,"saut":0,"moves":new Champique},
+            {"x":550,"y":900,"vx":0,"vy":0,"g":0,"sens":-1,"saut":0,"moves":new Champi},
+            {"x":500,"y":1100,"vx":0,"vy":0,"g":0,"sens":-1,"saut":0,"moves":new Bipede}];
         victoire = [0,0,0,0];
         nVictoire = 0;
         chute = [5000,"aide2"];
+    }
+    else if (choixNiveau == "aide3"){
+        niveau = [[100,-200,500,50]];
+
+        element.balle = [];
+        balles = 0;
+        element.panneau = [[200,-200,"Le menu Crossed s'active avec la touche c. On peut y acceder depuis n'importe quel des jeux de cavalcadeur notamment : The legend of zelda Maker's Pencil et Marthéo Kart."],[300,-200,"Quand vous activez le menu Crossed, deux lignes de 5 carrés s'affichent alors. Celle du haut se remplira de 5 symboles au fur et à mesure de votre progression dans le jeu. Quand les 5 symboles seront apparus vous pourrez les noter : c'est le mot de passe du jeu auquel vous jouez."],[400,-200,"Quand vous avez découvert un mot de passe, vous pouvez l'écrire dans la ligne du dessous. Attention cependant car le mot de passe d'un jeu ne marche que dans les autres jeux. Pour entrer un mot de passe il suffit d'utiliser les flèches."],[500,-200,"Quand vous avez entré un mot de passe, il ne reste plus qu'à appuyer sur c à nouveau. Si le mot de passe est correct, vous accederez à un niveau bonus sinon le jeu reprendra comme si rien ne c'était passé. PS : le nom de ce menu n'est pas inspiré de l'émission éponyme de Karim Debbache."]];
+        element.choixN = [[550,-200,"aide2"]];
+
+        decor = [];
+
+        actor = [
+            {"x":150,"y":-250,"vx":0,"vy":0,"g":0,"sens":1,"saut":0,"moves":new Boule}];
+        victoire = [0,0,0,0];
+        nVictoire = 0;
+        chute = [5000,"aide3"];
     }
 
     else if (choixNiveau == "2-1"){
@@ -2072,6 +2150,24 @@ function selection(choixNiveau){
         victoire = [0,0,0,0,0,0];
         nVictoire = 1;
         chute = [3000,"-3-1"];
+    }
+    else if (choixNiveau == "-3-2"){
+        niveau = [[0,550,450,50],[0,900,150,50],[150,700,50,250],[200,900,800,50],[1150,900,150,50],[1400,900,300,50],[1900,500,300,50],[2150,750,400,50],[150,1350,50,200],[200,1500,700,50],[800,1200,0,0],[1050,1200,0,0],[1000,1200,550,50],[850,1850,800,50],[1800,1200,50,1100],[1300,2350,250,50],[1250,2250,50,150],[1550,2250,50,150],[1250,2100,50,50],[1250,2000,50,50],[2000,2200,50,50],[2200,1900,50,100],[1950,1700,100,50],[2150,1450,100,50],[1900,1250,50,50],[-50,1650,50,50]];
+        element.balle = [[180,490],[50,840],[540,840],[2340,700],[2010,2150],[870,1810],[240,1450]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[1450,2350,"tceles"]];
+        decor = [];
+        element.cle = [-1000,-1000];
+        actor = [{"x":62,"y":548,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageFeu,"img":new Image()},
+                 {"x":352,"y":550,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageTeleportation,"img":new Image()},
+                 {"x":1610,"y":1846,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Psychos,"img":new Image()},
+                 {"x":-29,"y":1627,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()},
+                 {"x":1553,"y":872,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Bombe,"img":new Image()},
+                 {"x":2058,"y":493,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageElectro,"img":new Image()}];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [5000,"-3-2"];
     }
     else if (choixNiveau == "reboot"){
         window.localStorage.setItem("cles","-1");

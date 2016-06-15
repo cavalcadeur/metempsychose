@@ -75,7 +75,6 @@ var newExplosion = function(x,y,tx,ty,s,color,n){
             top: ty
         });
     });
-    console.info("[nuage] h.css('left')=...", h.css('left'));
     var timeOut = window.setTimeout(function(){
         h.detach();
     },time * 1000);

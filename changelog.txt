@@ -1,8 +1,16 @@
 *** Objectifs 0.7 ***
-- 60 niveaux en plus (11/60)
+- 60 niveaux en plus (12/60)
 - mage blanc
+- porte blinde
+- sauterelle
+- champi ninja [DONE]
+- mage vert
+- champi vortex [DONE]
+- changement de famille pour la bombe [DONE]
+- torche [DONE]
 - menu tceles [DONE]
 - cinématiques (2/3)
+- optimisation
 
 
 *** version 0.6 ***
