@@ -1,12 +1,6 @@
 *** Objectifs 0.7 ***
-- 60 niveaux en plus (14/60)
-- nouveaux persos:
-	- mage blanc [DONE]
-	- porte blinde
-	- sauterelle [DONE]
-	- champi ninja [DONE]
-	- mage vert
-	- champi vortex [DONE]
+- 15 niveaux en plus [DONE]
+- nouveaux persos: mage blanc, mage vert, champi ninja, champi vortex, sauterelle [DONE]
 - changement de famille pour la bombe [DONE]
 - torche [DONE]
 - menu tceles [DONE]
