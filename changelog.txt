@@ -1,7 +1,7 @@
 *** Objectifs 0.7 ***
 - 60 niveaux en plus (14/60)
 - nouveaux persos:
-	- mage blanc
+	- mage blanc [DONE]
 	- porte blinde
 	- sauterelle [DONE]
 	- champi ninja [DONE]

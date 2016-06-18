@@ -55,7 +55,7 @@ imgFond.onload = function (){
 };
 
 var imagesCinList = ["fond3","fond4","fond5","heroine","heroine2","palmier1","magePsy","magePsy2","esprit","note1","note2","note3","vortex2","barre","boule4"];
-var imagesList = ["bombe","bombe2","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","champiVortex","champiNinja","fantome","inter","jumper","psychos","T","carnivore","T2","mageNoir","esprit","torcheA","torcheB","sauterelle"];
+var imagesList = ["bombe","bombe2","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","champiVortex","champiNinja","fantome","inter","jumper","psychos","T","B","carnivore","T2","mageNoir","esprit","torcheA","torcheB","sauterelle"];
 var images = {};
 var imgCin = {};
 
@@ -174,16 +174,30 @@ function MageNoir() {
     this.anim = ["w",0];
 }
 
+function MageBlanc() {
+    this.saut = 50;
+    this.vit = 5;
+    this.img = "B";
+    this.sx = 107;
+    this.sy = 107;
+    this.capa = "volant";
+    this.IA = "wait";
+    this.att = [];
+    this.res = [];
+    this.spam = 500;
+    this.anim = ["w",0];
+}
+
 function MageTerre(){
     this.saut = 0;
     this.vit = 3;
     this.img = "T";
-    this.sx = 70;
-    this.sy = 91;
-    this.capa = "";
+    this.sx = 100;
+    this.sy = 107;
+    this.capa = "createur";
     this.IA = "wait";
     this.att = [5];
-    this.res = [1,2,3,4,5,6,7,8,9];
+    this.res = [5];
     this.anim = ["w",0];
 }
 
@@ -565,6 +579,10 @@ function tombe(n){
                 }
             }
             if (c[1] < actor[n].y && c[1] + c[3] > actor[n].y && c[0] < actor[n].x && c[0] + c[2] > actor[n].x){
+                if (keys[32] == 1 && j == n && actor[j].moves.capa == "createur"){
+                    c[0] -= 5;
+                    c[2] += 10;
+                }
                 if (actor[n].g > 0) actor[n].g = 0;
                 if (actor[n].saut != 0 && actor[n].g == 0){
                     actor[n].saut -= 1;
@@ -657,6 +675,7 @@ function gauche(n){
 function moveRight(n){
     actor[n].sens = 1;
     actor[n].vx += actor[n].moves.vit;
+    if (actor[n].moves.capa == "volant" && actor[n].g > 1) actor[n].vx += actor[n].moves.vit * 3;
     if (actor[n].moves.capa == "courseLongue" | actor[n].moves.capa == "torcheVol") actor[n].vx = actor[n].moves.vit;
     if (actor[n].moves.capa == "instable"  || actor[n].moves.capa == "grossissement" || actor[n].moves.capa == "explode"){
         actor[n].moves.inertie += 0.1;
@@ -670,6 +689,7 @@ function moveRight(n){
 function moveLeft(n){
     actor[n].sens = -1;
     actor[n].vx -= actor[n].moves.vit;
+    if (actor[n].moves.capa == "volant" && actor[n].g > 1) actor[n].vx -= actor[n].moves.vit * 3;
     if (actor[n].moves.capa == "courseLongue" | actor[n].moves.capa == "torcheVol") actor[n].vx = -1 * actor[n].moves.vit;
     if (actor[n].moves.capa == "instable"  || actor[n].moves.capa == "grossissement" || actor[n].moves.capa == "explode"){
         actor[n].moves.inertie -= 0.1;
@@ -974,6 +994,7 @@ function paint(t){
                 }
             }
             if (tombe(i)) {
+                if (actor[i].g > 0 && actor[i].moves.capa == "volant") actor[i].g -= 0.9;
                 actor[i].g += 1;
                 if (actor[i].moves.capa == "immateriel") actor[i].g -= 0.9;
             }
@@ -1045,10 +1066,12 @@ function draw() {
             }
         }
     );
-    ctx.drawImage(imgCle,element.cle[0] - X,element.cle[1] - Y);
-    if (actorBas < element.cle[1] + imgBalleY / 2 && actor[j].y > element.cle[1] + imgBalleY / 2 && actor[j].x - actor[j].moves.sx / 2 < element.cle[0] + imgBalleX / 2 && actor[j].x + actor[j].moves.sx / 2 > element.cle[0] + imgFeuX / 2){
-        element.cle = [-1000,-1000];
-        potentielCle = 1;
+    if (element.cle[0] != -1000 && element.cle[1] != -1000){
+        ctx.drawImage(imgCle,element.cle[0] - X,element.cle[1] - Y);
+        if (actorBas < element.cle[1] + imgBalleY / 2 && actor[j].y > element.cle[1] + imgBalleY / 2 && actor[j].x - actor[j].moves.sx / 2 < element.cle[0] + imgBalleX / 2 && actor[j].x + actor[j].moves.sx / 2 > element.cle[0] + imgFeuX / 2){
+            element.cle = [-1000,-1000];
+            potentielCle = 1;
+        }
     }
     actor.forEach(
         function(c) {
@@ -2150,7 +2173,7 @@ function selection(choixNiveau){
         element.balle = [[360,560]];
         balles = 0;
         element.panneau = [];
-        element.choixN = [[1150,850,"tceles"]];
+        element.choixN = [[1150,850,"-1-1,3"]];
         decor = [];
         element.cle = [-1430,780];
         actor = [{"x":149,"y":967,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new GraviChampi,"img":new Image()},
@@ -2159,6 +2182,23 @@ function selection(choixNiveau){
         victoire = [0,0,0,0,0,0];
         nVictoire = 1;
         chute = [2000,"-1-1,2"];
+    }
+    else if (choixNiveau == "-1-1,3"){
+        niveau = [[100,750,250,50],[650,1100,650,50],[300,500,400,50],[900,200,250,50],[950,650,50,50],[1300,650,50,50],[1600,650,50,50],[1900,650,50,50],[550,1350,50,50],[700,1300,50,50],[850,1250,50,50]];
+        element.balle = [[290,710],[1910,610],[1121,140]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[1160,1100,"tceles"]];
+        decor = [];
+        element.cle = [850,1220];
+        actor = [{"x":140,"y":747,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageFeu,"img":new Image()},
+                 {"x":1162,"y":1086,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Psychos,"img":new Image()},
+                 {"x":446,"y":481,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new ChampiNinja,"img":new Image()},
+                 {"x":1021,"y":194,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageTerre,"img":new Image()},
+                ];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"-1-1,3"];
     }
     else if (choixNiveau == "-3-1"){
         niveau = [[0,450,50,50],[200,700,50,50],[0,950,50,50],[200,1200,50,50],[0,1500,400,50],[0,2100,150,50],[300,2100,550,50],[350,1750,800,50],[1050,2100,300,50],[1500,2100,150,50],[1650,1950,50,200],[1650,1900,50,50],[900,1500,50,50],[1100,1350,50,50],[900,1200,50,50],[1100,1000,50,50],[1250,1150,450,50],[1250,1200,50,250],[1300,1400,350,50],[1650,1200,50,250],[1800,1300,350,50],[1900,1150,100,0],[1900,1050,150,50]];
