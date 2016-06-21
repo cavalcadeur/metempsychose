@@ -1,11 +1,11 @@
-*** Objectifs 0.7 ***
-- 15 niveaux en plus [DONE]
-- nouveaux persos: mage blanc, mage vert, champi ninja, champi vortex, sauterelle [DONE]
-- changement de famille pour la bombe [DONE]
-- torche [DONE]
-- menu tceles [DONE]
-- cinématiques (2/3)
+*** version 0.7 ***
+- 15 niveaux en plus
+- 6 nouveaux persos: mage blanc, mage vert, champi ninja, champi vortex, sauterelle, torche
+- changement de famille pour la bombe
+- menu tceles
+- cinématiques
 - optimisation
+- changement du dessin des plates-formes
 
 
 *** version 0.6 ***

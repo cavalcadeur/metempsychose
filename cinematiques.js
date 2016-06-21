@@ -93,7 +93,17 @@ function drawCinema(){
             ctx.drawImage(imgCin.magePsy,100,H/2 - imgCin.magePsy.height);
             ctx.drawImage(imgCin.esprit,W/2,H/2 - imgCin.esprit.height);
         }
-        if (nCine >= 550){
+        else if (nCine <= 250){
+            ctx.drawImage(imgCin.magePsy,100,H/2 - imgCin.magePsy.height);
+            ctx.drawImage(imgCin.esprit,W/2 + (W-500-W/2)*(nCine-200)/50,H/2  - imgCin.esprit.height + (H/3-imgCin.boule4.height-H/2 + imgCin.esprit.height)*(nCine-200)/50);
+            if (nCine == 250) {
+                for (var iii = 0; iii < 4; iii++) {
+                    taille = rnd(50)+100;
+                    newExplosion(W - 470 - taille/2 + "px",H/3-imgCin.boule4.height/2 - taille/2  + "px",W - 470 - taille/2 - rnd(1000) + 500 + "px",H/3-imgCin.boule4.height/2 - taille/2 - rnd(1000) + 500 + "px", taille + "px",3,1);
+                }
+            }
+        }
+        if (nCine >= 350){
             if (jeuCharge == 1){
                 nCine = -2;
             }

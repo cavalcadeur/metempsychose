@@ -580,7 +580,7 @@ function tombe(n){
                     actor[n].g = 0;
                 }
             }
-            if (c[1] < actor[n].y && c[1] + c[3] > actor[n].y && c[0] < actor[n].x && c[0] + c[2] > actor[n].x){
+            else if (c[1] < actor[n].y && c[1] + c[3] > actor[n].y && c[0] < actor[n].x && c[0] + c[2] > actor[n].x){
                 if (capa == "createur"){
                     if (n == j && keys[32] == 1){
                         c[0] -= 5;
