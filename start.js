@@ -1218,13 +1218,15 @@ function drawEntrer() {
     ctx.lineTo(W,H);
     ctx.lineTo(0,H);
     ctx.lineTo(0,0);
-    var x = W/50*(entrer-25);
-    var y = H/50*(entrer-25);
-    ctx.moveTo(W/2+x,H/2-y);
-    ctx.lineTo(W/2-x,H/2-y);
-    ctx.lineTo(W/2-x,H/2+y);
-    ctx.lineTo(W/2+x,H/2+y);
-    ctx.lineTo(W/2+x,H/2-y);
+    var radius = Math.abs(Math.hypot(W/2,H/2)/50*(entrer-25));
+//    var x = W/50*(entrer-25);
+//    var y = H/50*(entrer-25);
+    if (entrer != 25) ctx.arc(W/2,H/2,radius,0,2*Math.PI,true);
+//    ctx.moveTo(W/2+x,H/2-y);
+//    ctx.lineTo(W/2-x,H/2-y);
+  //  ctx.lineTo(W/2-x,H/2+y);
+    //ctx.lineTo(W/2+x,H/2+y);
+    //ctx.lineTo(W/2+x,H/2-y);
     ctx.fill();
     entrer -= 1;
     if (entrer == 25) {
