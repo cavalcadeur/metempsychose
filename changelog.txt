@@ -1,3 +1,10 @@
+--- objectifs 0.8 ---
+- niveaux aquatiques 0/5
+- boss de fin et clés
+- bonus après générique
+- générique
+- animation d'entrée des portes
+
 *** version 0.7 ***
 - 15 niveaux en plus
 - 6 nouveaux persos: mage blanc, mage vert, champi ninja, champi vortex, sauterelle, torche
@@ -6,7 +13,6 @@
 - cinématiques
 - optimisation
 - changement du dessin des plates-formes
-
 
 *** version 0.6 ***
 - nouveaux persos : Mage violet, Mage noir, GraviChampi

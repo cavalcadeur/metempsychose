@@ -49,6 +49,8 @@ var jeuCharge = 0;
 var potentielCle = 0;
 var cles = window.localStorage.getItem("cles");
 console.log(cles);
+var entrer = 0;
+var selectS = "";
 
 imgFond.onload = function (){
     console.log(imgFond);
@@ -533,7 +535,7 @@ function Titre4(){
 }
 
 
-var element = {"feu":[],"balle":[],"panneau":[],"choixN":[]};
+var element = {"feu":[],"balle":[],"panneau":[],"choixN":[],"cle":[]};
 
 // niveau
 
@@ -845,13 +847,13 @@ function action(){
     element.choixN.forEach(
         function(e) {
             if (inAction == 1 && Math.hypot(actor[j].x - e[0],actor[j].y - e[1]) < 30){
-                selection (e[2]);
+                entrer = 50;
+                selectS = e[2];
                 keys[32] = 0;
                 keys[39] = 0;
                 keys[37] = 0;
                 keys[96] = 0;
                 inAction = 0;
-                j = 0;
                 tele = 0;
             }
         }
@@ -919,6 +921,9 @@ function animation(){
             else {
                 if (keys[77] == 1){
                     window.requestAnimationFrame(drawMap);
+                }
+                else if (entrer > 0){
+                    window.requestAnimationFrame(drawEntrer);
                 }
                 else if (trans == 0){
                     if (mort != 1){
@@ -1201,6 +1206,33 @@ function drawMap() {
     );
     ctx.strokeStyle = "rgb(0,0,0)";
     ctx.strokeRect(X / ratio,Y / ratio,1000 / ratio,800 / ratio);
+    animation();
+}
+
+function drawEntrer() {
+    draw();
+    ctx.fillStyle = "rgb(0,0,0)";
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo(W,0);
+    ctx.lineTo(W,H);
+    ctx.lineTo(0,H);
+    ctx.lineTo(0,0);
+    var x = W/50*(entrer-25);
+    var y = H/50*(entrer-25);
+    ctx.moveTo(W/2+x,H/2-y);
+    ctx.lineTo(W/2-x,H/2-y);
+    ctx.lineTo(W/2-x,H/2+y);
+    ctx.lineTo(W/2+x,H/2+y);
+    ctx.lineTo(W/2+x,H/2-y);
+    ctx.fill();
+    entrer -= 1;
+    if (entrer == 25) {
+        j = 0;
+        selection(selectS);
+        X = actor[j].x - W / 2;
+        Y = actor[j].y - H / 2;
+    }
     animation();
 }
 
