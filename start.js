@@ -25,6 +25,8 @@ var imgBarre2 = new Image();
 imgBarre2.src = "images/barre2.png";
 var imgBarre3 = new Image();
 imgBarre3.src = "images/barre3.png";
+var goOn = 1;
+var nnn = 10;
 var edition = 0;
 var imgFeuX = 70;
 var imgFeuY = 35;
@@ -56,8 +58,8 @@ imgFond.onload = function (){
     console.log(imgFond);
 };
 
-var imagesCinList = ["fond3","fond4","fond5","heroine","heroine2","palmier1","magePsy","magePsy2","esprit","note1","note2","note3","vortex2","barre","boule4"];
-var imagesList = ["bombe","bombe2","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","champiVortex","champiNinja","fantome","inter","jumper","psychos","T","B","carnivore","T2","mageNoir","esprit","torcheA","torcheB","sauterelle"];
+var imagesCinList = ["fond3","fond4","fond5","heroine","heroine2","palmier1","magePsy","magePsy2","esprit","note1","note2","note3","vortex2","barre","boule4","barre3","barre2","vortex3","vortex","cle","ame","fin"];
+var imagesList = ["bombe","bombe2","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","champiVortex","champiNinja","fantome","inter","jumper","psychos","T","B","carnivore","T2","mageNoir","esprit","torcheA","torcheB","sauterelle","magePsy"];
 var images = {};
 var imgCin = {};
 
@@ -202,6 +204,20 @@ function MageTerre(){
     this.res = [5];
     this.anim = ["w",0];
     this.plate = -1;
+}
+
+function MagePsy(){
+    this.saut = 0;
+    this.vit = 0;
+    this.img = "magePsy";
+    this.sx = 200;
+    this.sy = 200;
+    this.capa = "feu";
+    this.IA = "superFeu";
+    this.att = [1,2,3,4,5,6,7,8,9];
+    this.res = [1,2,3,4];
+    this.anim = ["w",0];
+    this.spam = 100;
 }
 
 function Boule() {
@@ -534,6 +550,12 @@ function Titre4(){
     this.sy = 20;
 }
 
+function PorteLock(){
+    this.img = "vortex3";
+    this.sx = 30;
+    this.sy = 70;
+}
+
 
 var element = {"feu":[],"balle":[],"panneau":[],"choixN":[],"cle":[]};
 
@@ -737,7 +759,16 @@ function IA(i){
     else if (actor[i].moves.IA == "spamFeu") {
         if (actor[i].moves.spam > 500){
             actor[i].moves.spam = 0;
-            element.feu.push([actor[i].x + 10 * actor[j].sens,actor[i].y - actor[i].moves.sy / 2,10]);
+            element.feu.push([actor[i].x - 50 + (70 * actor[i].sens),actor[i].y - actor[i].moves.sy / 2,10 * actor[i].sens,0]);
+        }
+    }
+    else if (actor[i].moves.IA == "superFeu") {
+        if (actor[i].moves.spam > 100){
+            var prop = 10 / Math.hypot(actor[j].x - actor[i].x,(actor[j].y - actor[j].moves.sy / 2) - (actor[i].y - actor[i].moves.sy / 2));
+            var vx = (actor[j].x - actor[i].x) * prop;
+            var vy = ((actor[j].y - actor[j].moves.sy / 2) - (actor[i].y - actor[i].moves.sy / 2)) * prop;
+            actor[i].moves.spam = 0;
+            element.feu.push([actor[i].x - 50 + (13*vx),actor[i].y - actor[i].moves.sy / 2 + (13*vy),vx,vy]);
         }
     }
     else if (actor[i].moves.IA == "maintien") {
@@ -761,10 +792,12 @@ function transfert(){
     vj = proche();
     if (vj == j) return;
     trans = 1;
+    goOn = 0;
 }
 
 function death(){
     potentielCle = 0;
+    goOn = 0;
     mort = 1;
     actor[j].g = 10;
 }
@@ -841,13 +874,14 @@ function action(){
     if (actor[j].moves.capa == "feu" && actor[j].moves.spam > 100){
         actor[j].moves.spam = 0;
         keys[32] = 0;
-        element.feu.push([actor[j].x + 10 * actor[j].sens,actor[j].y - actor[j].moves.sy / 2,10 * actor[j].sens]);
+        element.feu.push([actor[j].x - 50 + (70 * actor[j].sens),actor[j].y - actor[j].moves.sy / 2,10 * actor[j].sens,0]);
     }
     var tele = 1;
     element.choixN.forEach(
         function(e) {
             if (inAction == 1 && Math.hypot(actor[j].x - e[0],actor[j].y - e[1]) < 30){
                 entrer = 50;
+                goOn = 0;
                 selectS = e[2];
                 keys[32] = 0;
                 keys[39] = 0;
@@ -913,24 +947,21 @@ function animation(){
         if (nCine != -1){
             drawCinema();
         }
+        else if (goOn == 1){
+            paint(t);
+            window.requestAnimationFrame(f);
+        }
         else{
             if (Crossed.testCrossed() == 1){
                 draw(t);
                 window.requestAnimationFrame(Crossed.drawMenu(ctx,W,H));
             }
             else {
-                if (keys[77] == 1){
-                    window.requestAnimationFrame(drawMap);
-                }
-                else if (entrer > 0){
+                if (entrer > 0){
                     window.requestAnimationFrame(drawEntrer);
                 }
                 else if (trans == 0){
-                    if (mort != 1){
-                        paint(t);
-                        window.requestAnimationFrame(f);
-                    }
-                    else window.requestAnimationFrame(drawDeath);
+                    window.requestAnimationFrame(drawDeath);
                 }
                 else window.requestAnimationFrame(drawTransfert);
             }
@@ -960,71 +991,73 @@ function paint(t){
     if ((1 == keys[96] | 1 == keys[88]) && balles > 0) transfert();
     if (1 == keys[32]) action();
     for (var i = 0;i < actor.length;i++){
-        if (actor[i].moves.capa == "feu" | actor[i].moves.IA == "maintien")actor[i].moves.spam += 1;
-        if (actor[i].moves.capa == "explode" && actor[i].moves.explode == 1){
-            actor[i].moves.res = [1,2,3,4,5,6,7,8,9,10];
-            actor[i].moves.vit = 0;
-            actor[i].moves.explode = t;
-        }
-        else if (actor[i].moves.capa == "explode" && actor[i].moves.explode > 0 && t - actor[i].moves.explode > 2000){
-            actor[i].moves.capa = "explosive";
-            actor[i].moves.att.push(10);
-            actor[i].moves.r = 0;
-            actor[i].img  = images[actor[i].moves.img + "3"];
-            for (var iii = 0; iii < 5; iii++) {
-                var taille = rnd(100) + 50;
-                newExplosion(actor[i].x - 50 + "px",actor[i].y - 105  + "px",actor[i].x - 70 - rnd(30) + "px",actor[i].y - 155 - rnd(30)+ "px", taille + "px",0,1);
+        // if (actor[i].x < X + W && actor[i].x > X && actor[i].y < Y + H && actor[i].y > Y){
+            if (actor[i].moves.capa == "feu" | actor[i].moves.IA == "maintien")actor[i].moves.spam += 1;
+            if (actor[i].moves.capa == "explode" && actor[i].moves.explode == 1){
+                actor[i].moves.res = [1,2,3,4,5,6,7,8,9,10];
+                actor[i].moves.vit = 0;
+                actor[i].moves.explode = t;
             }
-            actor.forEach(
-                function(c,index) {
-                    contact(i,index);
+            else if (actor[i].moves.capa == "explode" && actor[i].moves.explode > 0 && t - actor[i].moves.explode > 2000){
+                actor[i].moves.capa = "explosive";
+                actor[i].moves.att.push(10);
+                actor[i].moves.r = 0;
+                actor[i].img  = images[actor[i].moves.img + "3"];
+                for (var iii = 0; iii < 5; iii++) {
+                    var taille = rnd(100) + 50;
+                    newExplosion(actor[i].x - 50 + "px",actor[i].y - 105  + "px",actor[i].x - 70 - rnd(30) + "px",actor[i].y - 155 - rnd(30)+ "px", taille + "px",0,1);
                 }
-            );
-        }
-        else if (actor[i].moves.capa == "explosive" && t - actor[i].moves.explode > 2200){
-            coup(i,15);
-        }
-        else{
-            if (actor[i].moves.capa == "instable"){
-                actor[i].vx += actor[i].moves.inertie;
-                if (actor[i].moves.inertie > 0)actor[i].moves.inertie -= 0.001;
-                if (actor[i].moves.inertie < 0)actor[i].moves.inertie += 0.001;
-                actor[i].moves.r += actor[i].moves.inertie / actor[i].moves.sy;
-                if (actor[i].moves.r > Math.PI)actor[i].moves.r -= 2*Math.PI;
-                if (actor[i].moves.r < Math.PI)actor[i].moves.r += 2*Math.PI;
+                actor.forEach(
+                    function(c,index) {
+                        contact(i,index);
+                    }
+                );
             }
-            else if (actor[i].moves.capa == "grossissement"){
-                if (actor[i].moves.size > 2){
-                    actor[i].moves.size = 0.5;
-                    actor[i].g = -15;
-                    actor[i].vx = 10*actor[i].sens;
-                    actor.push({"x":actor[i].x,"y":actor[i].y,"vx":-10*actor[i].sens,"vy":0,"sens":actor[i].sens*-1,"g":-15,"frame":0,"saut":0,"moves":new BouleNeige});
-                    actor[actor.length -1].img = images[actor[actor.length -1].moves.img];
+            else if (actor[i].moves.capa == "explosive" && t - actor[i].moves.explode > 2200){
+                coup(i,15);
+            }
+            else{
+                if (actor[i].moves.capa == "instable"){
+                    actor[i].vx += actor[i].moves.inertie;
+                    if (actor[i].moves.inertie > 0)actor[i].moves.inertie -= 0.001;
+                    if (actor[i].moves.inertie < 0)actor[i].moves.inertie += 0.001;
+                    actor[i].moves.r += actor[i].moves.inertie / actor[i].moves.sy;
+                    if (actor[i].moves.r > Math.PI)actor[i].moves.r -= 2*Math.PI;
+                    if (actor[i].moves.r < Math.PI)actor[i].moves.r += 2*Math.PI;
+                }
+                else if (actor[i].moves.capa == "grossissement"){
+                    if (actor[i].moves.size > 2){
+                        actor[i].moves.size = 0.5;
+                        actor[i].g = -15;
+                        actor[i].vx = 10*actor[i].sens;
+                        actor.push({"x":actor[i].x,"y":actor[i].y,"vx":-10*actor[i].sens,"vy":0,"sens":actor[i].sens*-1,"g":-15,"frame":0,"saut":0,"moves":new BouleNeige});
+                        actor[actor.length -1].img = images[actor[actor.length -1].moves.img];
+                    }
+                }
+                if (tombe(i)) {
+                    if (actor[i].g > 0 && actor[i].moves.capa == "volant") actor[i].g -= 0.9;
+                    actor[i].g += 1;
+                    if (actor[i].moves.capa == "immateriel") actor[i].g -= 0.9;
+                }
+                if (actor[i].vx > 0) droite(i);
+                else if (actor[i].vx < 0) gauche(i);
+                if (actor[i].moves.capa != "torcheVol"){
+                    if (actor[i].moves.capa == "graviteI") actor[i].vy -= actor[i].g;
+                    else actor[i].vy += actor[i].g;
+                }
+                if (actor[i].moves.capa == "lourd") actor[i].vy += actor[i].g;
+                actor[i].x += actor[i].vx;
+                actor[i].y += actor[i].vy;
+                if (actor[i].moves.capa != "courseLongue" && actor[i].moves.capa != "torcheVol"){
+                    actor[i].vx = 0;
+                }
+                actor[i].vy = 0;
+                if (i != j){
+                    IA(i);
+                    contact(j,i);
                 }
             }
-            if (tombe(i)) {
-                if (actor[i].g > 0 && actor[i].moves.capa == "volant") actor[i].g -= 0.9;
-                actor[i].g += 1;
-                if (actor[i].moves.capa == "immateriel") actor[i].g -= 0.9;
-            }
-            if (actor[i].vx > 0) droite(i);
-            else if (actor[i].vx < 0) gauche(i);
-            if (actor[i].moves.capa != "torcheVol"){
-                if (actor[i].moves.capa == "graviteI") actor[i].vy -= actor[i].g;
-                else actor[i].vy += actor[i].g;
-            }
-            if (actor[i].moves.capa == "lourd") actor[i].vy += actor[i].g;
-            actor[i].x += actor[i].vx;
-            actor[i].y += actor[i].vy;
-            if (actor[i].moves.capa != "courseLongue" && actor[i].moves.capa != "torcheVol"){
-                actor[i].vx = 0;
-            }
-            actor[i].vy = 0;
-            if (i != j){
-                IA(i);
-                contact(j,i);
-            }
-        }
+       // }
     }
     X = actor[j].x - W / 2;
     Y = actor[j].y - H / 2;
@@ -1038,6 +1071,13 @@ function paint(t){
     ctx.closePath();
     ctx.stroke();
     t2 = t;
+    if (actor[j].moves.IA == "superFeu"){
+        nnn -= 1;
+        if (nnn == 0){
+            cinema = "outro";
+            nCine = 0;
+        }
+    }
     square.css({
         position: "absolute",
         left: -X + "px",
@@ -1132,6 +1172,7 @@ function draw() {
         function(e) {
             ctx.drawImage(imgFeu,e[0] - X,e[1] - Y);
             e[0] += e[2];
+            e[1] += e[3];
             niveau.forEach(
                 function(c) {
                     if (c[1] - 1 < e[1] + imgFeuY / 2 && c[1] + c[3] > e[1] + imgFeuY / 2 && c[0] < e[0] + imgFeuX / 2 && c[0] + c[2] > e[0] + imgFeuX / 2){
@@ -1164,6 +1205,7 @@ function drawDeath() {
     if (actor[j].y > Y + 1000) {
         selection(chute[1]);
         mort = 0;
+        goOn = 1;
         animation();
     }
     else{
@@ -1178,6 +1220,7 @@ function drawTransfert() {
     if (((actor[vj].x - actor[j].x > 0 && X >= actor[vj].x - W / 2) | (actor[vj].x - actor[j].x < 0 && X <= actor[vj].x - W / 2)) | ((actor[vj].y - actor[j].y > 0 && Y >= actor[vj].y - H / 2) | (actor[vj].y - actor[j].y < 0 && Y <= actor[vj].y - H / 2))){
         j = vj;
         trans = 0;
+        goOn = 1;
         animation();
     }
     else{
@@ -1219,12 +1262,12 @@ function drawEntrer() {
     ctx.lineTo(0,H);
     ctx.lineTo(0,0);
     var radius = Math.abs(Math.hypot(W/2,H/2)/50*(entrer-25));
-//    var x = W/50*(entrer-25);
-//    var y = H/50*(entrer-25);
+    //    var x = W/50*(entrer-25);
+    //    var y = H/50*(entrer-25);
     if (entrer != 25) ctx.arc(W/2,H/2,radius,0,2*Math.PI,true);
-//    ctx.moveTo(W/2+x,H/2-y);
-//    ctx.lineTo(W/2-x,H/2-y);
-  //  ctx.lineTo(W/2-x,H/2+y);
+    //    ctx.moveTo(W/2+x,H/2-y);
+    //    ctx.lineTo(W/2-x,H/2-y);
+    //  ctx.lineTo(W/2-x,H/2+y);
     //ctx.lineTo(W/2+x,H/2+y);
     //ctx.lineTo(W/2+x,H/2-y);
     ctx.fill();
@@ -1235,6 +1278,7 @@ function drawEntrer() {
         X = actor[j].x - W / 2;
         Y = actor[j].y - H / 2;
     }
+    else if (entrer == 0) goOn = 1;
     animation();
 }
 
@@ -1245,9 +1289,15 @@ function finNiveau(){
 }
 
 function selection(choixNiveau){
+    nnn = 10;
     if (potentielCle == 1){
         cles += 1;
         window.localStorage.setItem("cles",JSON.stringify(cles));
+        if (cles == 50){
+            nCine = 0;
+            cinema = "ouverture";
+            choixNiveau = "select";
+        }
     }
     potentielCle = 0;
     secret = [-800,-800,0,"select"];
@@ -1256,7 +1306,7 @@ function selection(choixNiveau){
     j = 0;
     element = {"feu":[],"balle":[],"panneau":[],"choixN":[],"cle":[-1000,-1000]};
     if (choixNiveau == "select"){
-        niveau = [[0,20,500,ep],[-450,20,50,50],[200,320,1500,ep],[0,620,500,ep],[200,920,500,ep]];
+        niveau = [[0,20,500,ep],[900,20,200,ep],[-450,20,50,50],[200,320,1500,ep],[0,620,500,ep],[200,920,500,ep]];
 
         secret = [-900,20,400,"tceles"];
         element.balle = [];
@@ -1267,6 +1317,15 @@ function selection(choixNiveau){
         decor = [{"x":-200,"y":-400,"type":new Titre,"img":new Image()},
                  {"x":-655,"y":-200,"type":new Titre4,"img":new Image()},
                  {"x":-455,"y":-50,"type":new PanneauBas,"img":new Image()}];
+        if (cles >= 50){
+            element.choixN.push([1050,20,"boss"]);
+            element.panneau.push([950,20,"La porte du mage psychique est ouverte."]);
+        }
+        else {
+            decor.push({"x":1050,"y":20,"type":new PorteLock,"img":new Image()});
+            element.panneau.push([950,20,"Cette porte est verouillée, il vous manque encore " + (50-cles) + " cles pour l'ouvrir."]);
+        }
+        
 
         actor = [{"x":20,"y":0,"vx":0,"vy":0,"g":-20,"sens":1,"saut":0,"moves":new Boule}];
         victoire = [0,0,0,0];
@@ -1288,6 +1347,28 @@ function selection(choixNiveau){
         victoire = [0,0,0,0];
         nVictoire = 0;
         chute = [5000,"select"];
+    }
+    else if (choixNiveau == "boss"){
+        niveau = [[0,800,50,50],[100,1200,50,50],[300,950,50,50],[0,1050,50,50],[550,950,50,50],[800,950,50,50],[550,700,50,50],[550,1200,50,50],[150,350,50,50],[400,200,50,50],[750,200,50,50],[1300,750,0,0],[1350,700,50,50],[1000,400,50,50],[1250,950,50,50],[1150,650,0,50],[1100,700,50,50],[1600,950,50,50],[1400,1200,50,50],[800,1600,0,0]];
+        element.balle = [[1610,900],[1400,1150],[890,900],[110,1160]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [];
+        decor = [];
+        element.cle = [-1000,-1000];
+        actor = [{"x":23,"y":785,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()},
+                 {"x":575,"y":942,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MagePsy,"img":new Image()},
+                 {"x":328,"y":916,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Psychos,"img":new Image()},
+                 {"x":578,"y":671,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Psychos,"img":new Image()},
+                 {"x":828,"y":936,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Psychos,"img":new Image()},
+                 {"x":580,"y":1190,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Psychos,"img":new Image()},
+                 {"x":1384,"y":685,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new MageFeu,"img":new Image()},
+                 {"x":1192,"y":1315,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Esprit,"img":new Image()},
+                 {"x":175,"y":336,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new ChampiNinja,"img":new Image()},
+                ];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [5000,"boss"];
     }
     else if (choixNiveau == "aide"){
         niveau = [[0,20,500,ep],[ep * -1,20 - ep,ep,ep],[500,20 - ep,ep,ep],[0,420,500,ep]];
@@ -1883,7 +1964,7 @@ function selection(choixNiveau){
         element.balle = [];
         balles = 0;
         element.panneau = [];
-        element.choixN = [[1130,850,"select"]];
+        element.choixN = [[1130,850,"martheo4"]];
 
         decor = [];
 
@@ -1892,6 +1973,22 @@ function selection(choixNiveau){
                  {"x":1218,"y":830,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new BouleNeige,"img":new Image()},
                  {"x":986,"y":821,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new BouleNeige,"img":new Image()},
                  {"x":657,"y":809,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new BouleNeige,"img":new Image()}];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"martheo1"];
+    }
+    else if (choixNiveau == "martheo4"){
+        niveau = [[400,650,350,350],[200,700,50,50],[900,700,50,50],[350,400,500,50],[300,400,50,250],[300,250,50,150],[0,950,100,50],[950,700,50,50],[150,1350,500,50],[700,1200,50,50],[750,950,550,50],[950,1150,50,50],[1200,1200,50,50],[1450,1050,50,50],[300,150,50,100]];
+        element.balle = [[710,1150]];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[930,700,"select"]];
+        decor = [];
+        element.cle = [1210,1150];
+        actor = [{"x":227,"y":681,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()},
+                 {"x":576,"y":602,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Bipede,"img":new Image()},
+                 {"x":578,"y":1321,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new ChampiNinja,"img":new Image()},
+                ];
         victoire = [0,0,0,0,0,0];
         nVictoire = 1;
         chute = [2000,"martheo1"];

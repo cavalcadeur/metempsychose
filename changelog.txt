@@ -1,9 +1,12 @@
 --- objectifs 0.8 ---
+- plus de carte parce qu'il faut repenser le système   [DONE]
 - niveaux aquatiques 0/5
-- boss de fin et clés
+- boss de fin et clés                                  [DONE]
 - bonus après générique
 - générique
-- animation d'entrée des portes
+- animation d'entrée des portes                        [DONE]
+- optimisation hiérarchique des différentes animations [DONE] (parce que le jeu en lui même était enterré sous les conditions)
+- meilleur gestion des boules de feu.                  [DONE]
 
 *** version 0.7 ***
 - 15 niveaux en plus

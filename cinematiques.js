@@ -1,4 +1,9 @@
 function drawCinema(){
+    square.css({
+        position: "absolute",
+        left: 0 + "px",
+        top: 0 + "px"
+    });
     ctx.fillStyle = "rgb(98,0,123)";
     if (cinema == "intro1"){
         ctx.drawImage(imgCin.fond4,0,0,W,H);
@@ -108,6 +113,62 @@ function drawCinema(){
                 nCine = -2;
             }
         }
+    }
+    else if (cinema == "ouverture"){
+        ctx.drawImage(imgCin.fond3,0,0,W,H);
+        ctx.drawImage(imgCin.barre3,W/2-100,H/2);
+        ctx.drawImage(imgCin.barre3,W/2,H/2);
+        if (nCine <= 350) ctx.drawImage(imgCin.vortex3,W/2-30,H/2-70);
+        else ctx.drawImage(imgCin.vortex,W/2-30,H/2-70);
+        if (nCine < 300) var dist = (Math.cos(nCine/30) * 10) + 200;
+        else var dist = ((Math.cos(10) * 10) + 200)/50*(350-nCine);
+        for (var g = 0;g<50;g++){
+            var rr = (Math.PI/25)*g + nCine/100;
+            ctx.drawImage(imgCin.cle,W/2 - 25 + Math.cos(rr)*dist,H/2 - 6 - Math.sin(rr)*dist);
+        }
+        if (nCine == 350) { 
+            for (var iii = 0; iii < 4; iii++) {
+                taille = rnd(80)+200;
+                newExplosion(W/2 - taille/2 + "px",H/2 - taille/2  + "px",W/2 - taille/2 - rnd(500) + 250 + "px",H/2 - taille/2 - rnd(500) + 250 + "px", taille + "px",3,1);
+                }
+        }
+        if (nCine == 500) nCine = -2; 
+    }
+    else if (cinema == "outro"){
+        ctx.drawImage(imgCin.fond3,0,0,W,H);
+        ctx.drawImage(imgCin.barre2,W/2-25,H/2+100);
+        ctx.drawImage(imgCin.magePsy,W/2-100,H/2-100);
+        if (nCine < 250){
+            if (nCine < 30){
+                ctx.drawImage(imgCin.ame,W/2-50-nCine*10,H/2-40);
+            }
+            else ctx.drawImage(imgCin.ame,W/2-50-300,H/2-40);
+        }
+        if (nCine > 30){
+            if (nCine < 70){
+                ctx.drawImage(imgCin.esprit,W/2-50,H/2-40-(nCine-30)*3);
+            }
+            else ctx.drawImage(imgCin.esprit,W/2-50,H/2-160);
+        }
+        if (nCine > 80 && nCine < 300){
+            ctx.strokeStyle = "rgb(100,0,100)";
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(W/2,H/2-110);
+            ctx.lineTo(W/2-300,H/2);
+            ctx.closePath();
+            ctx.stroke();
+        }
+        if (nCine == 250){
+            for (var iii = 0; iii < 4; iii++) {
+                taille = rnd(80)+200;
+                newExplosion(W/2-300 - taille/2 + "px",H/2 - taille/2  + "px",W/2-300 - taille/2 - rnd(500) + 250 + "px",H/2 - taille/2 - rnd(500) + 250 + "px", taille + "px",3,1);
+                }
+        }
+        if (nCine == 500) cinema = "generique";
+    }
+    else if (cinema == "generique"){
+        ctx.drawImage(imgCin.fin,0,0,W,H);
     }
     nCine += 1;
     if (nCine != -1) animation();

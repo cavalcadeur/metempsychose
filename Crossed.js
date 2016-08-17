@@ -81,8 +81,8 @@ var Crossed = function () {
 	},
 
 	keyCrossed: function( ) {
-	    if (menu == 0) menu = 1;
-	    else {menu = 0;contenu();}	    
+	    if (menu == 0) { menu = 1; goOn = 0;}
+	    else {menu = 0;goOn = 1;contenu();}	    
 	},
 
 	testCrossed: function( ) {
