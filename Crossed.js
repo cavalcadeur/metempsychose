@@ -50,6 +50,7 @@ var Crossed = function () {
         var N = tryWord[4] + tryWord[3]*10 + tryWord[2]*100 + tryWord[1]*1000 + tryWord[0]*10000;
         if (N == 25652) selection("martheo1");
         else if (N == 19783) selection("maker1");
+        else if (N == 03778) selection("secretStage");
     }
 
     return {
