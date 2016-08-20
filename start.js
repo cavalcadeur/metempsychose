@@ -54,13 +54,14 @@ var cles = window.localStorage.getItem("cles");
 console.log(cles);
 var entrer = 0;
 var selectS = "";
+var phrasesSage = ["Lindel","Le mage psychique est puissant.","Pour le vaincre, il te faut prendre son corps.","Cependant, tu devras d'abord tuer ses quatre gardiens.","Si tu y parvient, le chateau sera à toi."];
 
 imgFond.onload = function (){
     console.log(imgFond);
 };
 
 var imagesCinList = ["fond3","fond4","fond5","heroine","heroine2","palmier1","magePsy","magePsy2","esprit","note1","note2","note3","vortex2","barre","boule4","barre3","barre2","vortex3","vortex","cle","ame","fin"];
-var imagesList = ["bombe","bombe2","barre2","note1","heroine2","champiDiamant","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","champiVortex","champiNinja","fantome","inter","jumper","psychos","T","B","carnivore","T2","mageNoir","esprit","torcheA","torcheB","sauterelle","magePsy"];
+var imagesList = ["bombe","bombe2","barre2","note1","heroine2","champiDiamant","bombe3","F3","E","bipede","boule4","bouleNeige","boxe","champi","champi4","champique","champiVortex","champiNinja","fantome","inter","jumper","psychos","T","B","carnivore","T2","mageNoir","esprit","torcheA","torcheB","sauterelle","magePsy","sage"];
 var images = {};
 var imgCin = {};
 
@@ -104,6 +105,7 @@ function loadingTest2(){
     }
     else {
         window.localStorage.setItem("cles","0");
+        cles = 0;
         animation();
     }
 }
@@ -219,6 +221,20 @@ function MagePsy(){
     this.res = [1,2,3,4];
     this.anim = ["w",0];
     this.spam = 100;
+}
+
+function Sage(){
+    this.saut = 27;
+    this.vit = 10;
+    this.img = "sage";
+    this.sx = 100;
+    this.sy = 103;
+    this.capa = "antiPsy";
+    this.IA = "dialogue";
+    this.att = [];
+    this.res = [1,2,3,4,5,6,7,8,9];
+    this.anim = ["w",0];
+    this.spam = -50;
 }
 
 function Boule() {
@@ -493,8 +509,8 @@ function Mushroom(){
 
 function Cristal(){
     this.img = "cristal";
-    this.sx = 0;
-    this.sy = 0;
+    this.sx = 50;
+    this.sy = 50;
 }
 
 function PanneauBas(){
@@ -787,6 +803,12 @@ function IA(i){
             actor[i].g = -1 * actor[i].moves.saut;
         }
     }
+    else if (actor[i].moves.IA == "dialogue"){
+        if (actor[i].moves.spam % 400 == 0 && actor[i].moves.spam / 400 < phrasesSage.length){
+            alert(phrasesSage[actor[i].moves.spam/400]);
+        }
+
+    }
     else if (actor[i].moves.IA == "tirer" && actor[i].moves.capa == "laserPsy") {
         if (Math.abs(actor[i].x - actor[j].x) < actor[i].moves.sx / 2 + actor[j].moves.sx / 2 + 150 && Math.abs(actor[i].y - actor[i].moves.sy / 2 - (actor[j].y - actor[j].moves.sy / 2)) < actor[i].moves.sy / 2 + actor[j].moves.sy / 2 + 150){
             laserPsy = i;
@@ -797,10 +819,10 @@ function IA(i){
 }
 
 function transfert(){
+    vj = proche();
+    if (vj == j || actor[vj].moves.capa == "antiPsy" || actor[vj].moves.capa == "laserPsy") return;
     balles -= 1;
     keys[96] = 0;
-    vj = proche();
-    if (vj == j) return;
     trans = 1;
     goOn = 0;
 }
@@ -1002,7 +1024,7 @@ function paint(t){
     if (1 == keys[32]) action();
     for (var i = 0;i < actor.length;i++){
         // if (actor[i].x < X + W && actor[i].x > X && actor[i].y < Y + H && actor[i].y > Y){
-        if (actor[i].moves.capa == "feu" || actor[i].moves.IA == "maintien" || actor[i].moves.IA == "hyperFeu")actor[i].moves.spam += 1;
+        if (actor[i].moves.capa == "feu" || actor[i].moves.IA == "maintien" || actor[i].moves.IA == "hyperFeu" || actor[i].moves.IA == "dialogue")actor[i].moves.spam += 1;
         if (actor[i].moves.capa == "explode" && actor[i].moves.explode == 1){
             actor[i].moves.res = [1,2,3,4,5,6,7,8,9,10];
             actor[i].moves.vit = 0;
@@ -1194,6 +1216,9 @@ function draw() {
                     }
                 }
             );
+            if (e[1] > chute[0] || e[1] < -chute[0]){
+                        element.feu.splice(element.feu.indexOf(e),1);
+            }
             actor.forEach(
                 function(c,index) {
                     if (c.y - c.moves.sy < e[1] + imgFeuY / 2 && c.y > e[1] + imgFeuY / 2 && c.x - c.moves.sx / 2 < e[0] + imgFeuX / 2 && c.x + c.moves.sx / 2 > e[0] + imgFeuX / 2){
@@ -1320,13 +1345,13 @@ function selection(choixNiveau){
     j = 0;
     element = {"feu":[],"balle":[],"panneau":[],"choixN":[],"cle":[-1000,-1000]};
     if (choixNiveau == "select"){
-        niveau = [[0,20,500,ep],[900,20,200,ep],[-450,20,50,50],[200,320,1500,ep],[0,620,500,ep],[200,920,500,ep]];
+        niveau = [[0,20,500,ep],[900,20,200,ep],[-450,20,50,50],[200,320,1500,ep],[0,620,500,ep],[200,920,500,ep],[1400,20,200,ep]];
 
         secret = [-900,20,400,"tceles"];
         element.balle = [];
         balles = 0;
         element.panneau = [[130,20,"Monde 1 : difficile"],[640,320,"Monde 2 : adresse"],[130,620,"Monde 3 : moyennement dur"],[640,920,"Monde 4 : a l'aveugle"]];
-        element.choixN = [[300,20,"1-1"],[450,20,"1-2"],[450,320,"2-2"],[300,320,"2-1"],[900,320,"2-4"],[1050,320,"2-5"],[750,320,"2-3"],[1200,320,"2-6"],[1350,320,"2-7"],[1500,320,"2-8"],[1650,320,"2-9"],[300,620,"3-1"],[450,620,"3-2"],[450,920,"aveugle"],[300,920,"aveugle2"],[600,920,"aveugle3"]];
+        element.choixN = [[300,20,"1-1"],[450,20,"1-2"],[450,320,"2-2"],[300,320,"2-1"],[900,320,"2-4"],[1050,320,"2-5"],[750,320,"2-3"],[1200,320,"2-6"],[1350,320,"2-7"],[1500,320,"2-8"],[1650,320,"2-9"],[300,620,"3-1"],[450,620,"3-2"],[450,920,"aveugle"],[300,920,"aveugle2"],[600,920,"aveugle3"],[1500,20,"couloir"]];
 
         decor = [{"x":-200,"y":-400,"type":new Titre,"img":new Image()},
                  {"x":-655,"y":-200,"type":new Titre4,"img":new Image()},
@@ -1361,6 +1386,39 @@ function selection(choixNiveau){
         victoire = [0,0,0,0];
         nVictoire = 0;
         chute = [5000,"select"];
+    }
+    else if (choixNiveau == "couloir"){
+        niveau = [[0,950,2200,50],[2200,950,1200,50],[0,300,850,50],[850,300,1250,50],[2100,300,1300,50],[3450,800,50,100],[3550,600,50,100],[3650,400,50,100],[1750,0,50,50],[1600,-300,50,50],[1300,-450,250,50]];
+        element.balle = [];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[3320,950,"sage"],[1430,-450,"select"]];
+        decor = [{"x":350,"y":700,"type":new Cristal,"img":new Image()},
+                 {"x":1050,"y":700,"type":new Cristal,"img":new Image()},
+                 {"x":1750,"y":700,"type":new Cristal,"img":new Image()},
+                 {"x":2450,"y":700,"type":new Cristal,"img":new Image()},
+                 {"x":3150,"y":700,"type":new Cristal,"img":new Image()}];
+        element.cle = [-1000,-1000];
+        actor = [{"x":225,"y":801,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()},
+                ];
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"select"];
+    }
+    else if (choixNiveau == "sage"){
+        niveau = [[0,1100,200,50],[350,800,800,50],[1300,1100,300,50]];
+        element.balle = [];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[1460,1100,"select"]];
+        decor = [{"x":400,"y":700,"type":new Cristal,"img":new Image()},
+                 {"x":1100,"y":700,"type":new Cristal,"img":new Image()}];
+        element.cle = [-1000,-1000];
+        actor = [{"x":90,"y":1100,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()}];
+        if (cles < 50) actor.push({"x":750,"y":798,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Sage,"img":new Image()});
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"select"];
     }
     else if (choixNiveau == "boss"){
         niveau = [[0,800,50,50],[100,1200,50,50],[300,950,50,50],[0,1050,50,50],[550,950,50,50],[800,950,50,50],[550,700,50,50],[550,1200,50,50],[150,350,50,50],[400,200,50,50],[750,200,50,50],[1300,750,0,0],[1350,700,50,50],[1000,400,50,50],[1250,950,50,50],[1150,650,0,50],[1100,700,50,50],[1600,950,50,50],[1400,1200,50,50],[800,1600,0,0]];
@@ -2460,7 +2518,7 @@ function selection(choixNiveau){
         element.balle = [];
         balles = 0;
         element.panneau = [];
-        element.choixN = [[270,750,"s-1"],[400,750,"s-2"],[520,750,"s-3"],[800,750,"s-4"],[930,750,"s-5"],[1040,750,"s-6"],[240,1100,"s-7"],[380,1100,"s-8"],[510,1100,"select"],[830,1100,"select"],[950,1100,"select"],[1060,1100,"select"],[670,1100,"select"],[30,1100,"select"],[1260,1100,"select"]];
+        element.choixN = [[270,750,"s-1"],[400,750,"s-2"],[520,750,"s-3"],[800,750,"s-4"],[930,750,"s-5"],[1040,750,"s-6"],[240,1100,"s-7"],[380,1100,"s-8"],[510,1100,"s-9"],[830,1100,"select"],[950,1100,"select"],[1060,1100,"select"],[670,1100,"select"],[30,1100,"select"],[1260,1100,"select"]];
         decor = [];
         element.cle = [-1000,-1000];
         actor = [{"x":648,"y":534,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Boule,"img":new Image()}];
@@ -2628,6 +2686,26 @@ function selection(choixNiveau){
         victoire = [0,0,0,0,0,0];
         nVictoire = 1;
         chute = [2000,"s-8"];
+    }
+    else if (choixNiveau == "s-9"){
+        niveau = [[300,1150,50,50],[600,1000,50,50],[300,750,50,50],[600,650,50,50],[1000,650,50,50],[1400,650,50,50],[1600,1000,50,50],[1900,1200,50,50],[-150,950,50,50],[900,200,50,50],[2300,1050,50,50]];
+        element.balle = [];
+        balles = 0;
+        element.panneau = [];
+        element.choixN = [[1930,1200,"secretStage"]];
+        decor = [];
+        element.cle = [-1000,-1000];
+        actor = [{"x":329,"y":1144,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new ChampiNinja,"img":new Image()},
+                 {"x":-125,"y":946,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Carnivore,"img":new Image()},
+                 {"x":2319,"y":1037,"vx":0,"vy":0,"sens":1,"frame":0,"g":0,"saut":0,"moves":new Carnivore,"img":new Image()},
+                ];
+        actor[1].moves.IA = "hyperFeu";
+        actor[2].moves.IA = "hyperFeu";
+        actor[2].moves.spam = 100;
+        actor[1].moves.spam = 100;
+        victoire = [0,0,0,0,0,0];
+        nVictoire = 1;
+        chute = [2000,"s-9"];
     }
     else if (choixNiveau == "reboot"){
         window.localStorage.setItem("cles","-1");
